@@ -321,7 +321,7 @@
 
         // Demo accounts
         const accounts = {
-            student: { username: 'hocsinh', password: '123456', redirect: 'trang chu.html' },
+            student: { username: 'hocsinh', password: '123456', redirect: 'index.html' },
             admin:   { username: 'admin',   password: 'admin123', redirect: 'admin.html' }
         };
 
@@ -371,7 +371,7 @@
             if (stored) {
                 try {
                     const u = JSON.parse(stored);
-                    window.location.href = u.role === 'admin' ? 'admin.html' : 'trang chu.html';
+                    window.location.href = u.role === 'admin' ? 'admin.html' : 'index.html';
                 } catch(e) {}
             }
         })();
