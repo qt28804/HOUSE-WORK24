@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thư viện - HOUSE WORK</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="UI.css">
+    <style>
+        .library-hero {
+            min-height: 40vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 120px 0 60px;
+            color: white;
+            text-align: center;
+        }
+        .library-filters {
+            background: white;
+            padding: 2rem 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 70px;
+            z-index: 100;
+        }
+        .filter-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            padding: 0.75rem 1.5rem;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        .filter-btn.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-color: transparent;
+        }
+        .library-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 4rem 0;
+        }
+        .library-item {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        .library-item:hover {
+            transform: translateY(-8px);
+        }
+        .item-thumbnail {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+        }
+        .item-content {
+            padding: 1.5rem;
+        }
+        .item-type {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+        .type-pdf { background: #fee; color: #c00; }
+        .type-video { background: #efe; color: #0a0; }
+        .type-code { background: #eef; color: #00a; }
+        .item-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #1a202c;
+        }
+        .item-desc {
+            color: #718096;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        .item-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .btn-view {
+            flex: 1;
+            padding: 0.75rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: opacity 0.3s;
+        }
+        .btn-view:hover { opacity: 0.9; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-microchip"></i>
+                <span>HOUSE WORK</span>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li class="nav-item"><a href="trang chu.html" class="nav-link">Trang chủ</a></li>
+                <li class="nav-item"><a href="Tài liệu.html" class="nav-link">Tài liệu</a></li>
+                <li class="nav-item active"><a href="thu-vien.html" class="nav-link">Thư viện</a></li>
+                <li class="nav-item"><a href="test.html" class="nav-link">Bài test</a></li>
+                <li class="nav-item"><a href="tien-do.html" class="nav-link">Tiến độ</a></li>
+                <li class="nav-item"><a href="am-nhac.html" class="nav-link"><i class="fas fa-music" style="color:#f093fb;margin-right:.3rem"></i>Âm nhạc</a></li>
+            </ul>
+            <div id="navAuthArea"></div>
+            <div class="hamburger" id="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <section class="library-hero">
+        <div class="container">
+            <h1><i class="fas fa-book-open"></i> Thư viện tài liệu</h1>
+            <p>PDF, Video, Code - Tất cả trong một nơi</p>
+        </div>
+    </section>
+
+    <div class="library-filters">
+        <div class="container">
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-type="all">Tất cả</button>
+                <button class="filter-btn" data-type="pdf">📄 PDF</button>
+                <button class="filter-btn" data-type="video">🎥 Video</button>
+                <button class="filter-btn" data-type="code">💻 Code</button>
+            </div>
+        </div>
+    </div>
+
+    <section class="container">
+        <div class="library-grid" id="libraryGrid">
+            <div class="library-item" data-type="pdf">
+                <div class="item-thumbnail"><i class="fas fa-file-pdf"></i></div>
+                <div class="item-content">
+                    <span class="item-type type-pdf">PDF</span>
+                    <h3 class="item-title">React Hooks Complete Guide</h3>
+                    <p class="item-desc">Tài liệu đầy đủ về React Hooks với ví dụ thực tế</p>
+                    <div class="item-actions">
+                        <button class="btn-view" onclick="viewDocument('react-hooks.pdf','React Hooks Complete Guide')">
+                            <i class="fas fa-eye"></i> Xem tài liệu
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="library-item" data-type="video">
+                <div class="item-thumbnail"><i class="fas fa-video"></i></div>
+                <div class="item-content">
+                    <span class="item-type type-video">Video</span>
+                    <h3 class="item-title">Node.js Microservices</h3>
+                    <p class="item-desc">Video hướng dẫn xây dựng microservices với Node.js</p>
+                    <div class="item-actions">
+                        <button class="btn-view" onclick="viewDocument('nodejs-micro.mp4','Node.js Microservices')">
+                            <i class="fas fa-play"></i> Xem video
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="library-item" data-type="code">
+                <div class="item-thumbnail"><i class="fas fa-code"></i></div>
+                <div class="item-content">
+                    <span class="item-type type-code">Code</span>
+                    <h3 class="item-title">Python FastAPI Template</h3>
+                    <p class="item-desc">Template code cho dự án FastAPI production-ready</p>
+                    <div class="item-actions">
+                        <button class="btn-view" onclick="viewDocument('fastapi-template.zip','Python FastAPI Template')">
+                            <i class="fas fa-download"></i> Tải code
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="library-item" data-type="pdf">
+                <div class="item-thumbnail"><i class="fas fa-file-pdf"></i></div>
+                <div class="item-content">
+                    <span class="item-type type-pdf">PDF</span>
+                    <h3 class="item-title">Docker & Kubernetes Guide</h3>
+                    <p class="item-desc">Hướng dẫn triển khai ứng dụng với Docker và K8s</p>
+                    <div class="item-actions">
+                        <button class="btn-view" onclick="viewDocument('docker-k8s.pdf','Docker & Kubernetes Guide')">
+                            <i class="fas fa-eye"></i> Xem tài liệu
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="library-item" data-type="video">
+                <div class="item-thumbnail"><i class="fas fa-video"></i></div>
+                <div class="item-content">
+                    <span class="item-type type-video">Video</span>
+                    <h3 class="item-title">Machine Learning Basics</h3>
+                    <p class="item-desc">Khóa học cơ bản về Machine Learning với Python</p>
+                    <div class="item-actions">
+                        <button class="btn-view" onclick="viewDocument('ml-basics.mp4','Machine Learning Basics')">
+                            <i class="fas fa-play"></i> Xem video
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="library-item" data-type="code">
+                <div class="item-thumbnail"><i class="fas fa-code"></i></div>
+                <div class="item-content">
+                    <span class="item-type type-code">Code</span>
+                    <h3 class="item-title">React TypeScript Boilerplate</h3>
+                    <p class="item-desc">Boilerplate React + TypeScript + Vite</p>
+                    <div class="item-actions">
+                        <button class="btn-view" onclick="viewDocument('react-ts-boilerplate.zip','React TypeScript Boilerplate')">
+                            <i class="fas fa-download"></i> Tải code
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="app.js"></script>
+    <script>
+        // ── Auth guard ──
+        (function() {
+            const stored = localStorage.getItem('hw_user') || sessionStorage.getItem('hw_user');
+            if (!stored) { window.location.replace('login.html'); return; }
+            try {
+                const u = JSON.parse(stored);
+                const area = document.getElementById('navAuthArea');
+                area.innerHTML = `
+                    <div style="display:flex;align-items:center;gap:.75rem;">
+                        <span style="font-size:.9rem;font-weight:600;color:#4a5568;">
+                            <i class="fas fa-user-circle" style="color:#667eea;margin-right:.3rem"></i>${u.displayName || u.username}
+                        </span>
+                        <button onclick="logout()" style="background:linear-gradient(135deg,#f5576c,#f093fb);color:white;padding:.5rem 1.1rem;border-radius:50px;border:none;font-weight:600;font-size:.85rem;cursor:pointer;display:flex;align-items:center;gap:.4rem;white-space:nowrap;">
+                            <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                        </button>
+                    </div>`;
+            } catch(e) { window.location.replace('login.html'); }
+        })();
+
+        function logout() {
+            localStorage.removeItem('hw_user');
+            sessionStorage.removeItem('hw_user');
+            window.location.href = 'login.html';
+        }
+
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const items = document.querySelectorAll('.library-item');
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                const type = btn.dataset.type;
+                items.forEach(item => {
+                    if (type === 'all' || item.dataset.type === type) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        function viewDocument(filename, title) {
+            document.getElementById('modalTitle').textContent = title || filename;
+            document.getElementById('summaryText').textContent = 'Đang tóm tắt...';
+            document.getElementById('docModal').classList.add('active');
+            // Giả lập AI tóm tắt
+            setTimeout(() => {
+                const summaries = {
+                    'react-hooks.pdf': 'Tài liệu này trình bày toàn bộ React Hooks: useState để quản lý state, useEffect cho side effects, useContext chia sẻ dữ liệu, useMemo/useCallback tối ưu performance, và cách tạo Custom Hooks tái sử dụng logic.',
+                    'nodejs-micro.mp4': 'Video hướng dẫn xây dựng kiến trúc microservices với Node.js: tách service, giao tiếp qua REST/gRPC, triển khai Docker, orchestration với Kubernetes và monitoring với Prometheus.',
+                    'fastapi-template.zip': 'Template FastAPI production-ready gồm: cấu trúc thư mục chuẩn, JWT authentication, SQLAlchemy ORM, Alembic migrations, Docker Compose và CI/CD pipeline.',
+                    'docker-k8s.pdf': 'Hướng dẫn từ Docker cơ bản đến Kubernetes nâng cao: viết Dockerfile, docker-compose, K8s Deployment/Service/Ingress, Helm charts và auto-scaling.',
+                    'ml-basics.mp4': 'Khóa học ML cơ bản: supervised/unsupervised learning, linear regression, decision tree, random forest, neural network cơ bản với scikit-learn và TensorFlow.',
+                    'react-ts-boilerplate.zip': 'Boilerplate React + TypeScript + Vite: cấu hình ESLint/Prettier, React Router, Zustand state management, Axios, Tailwind CSS và testing với Vitest.'
+                };
+                document.getElementById('summaryText').textContent = summaries[filename] || 'Nội dung tài liệu đang được xử lý...';
+            }, 1200);
+        }
+
+        document.getElementById('modalClose').addEventListener('click', () => {
+            document.getElementById('docModal').classList.remove('active');
+        });
+        document.getElementById('docModal').addEventListener('click', function(e) {
+            if (e.target === this) this.classList.remove('active');
+        });
+    </script>
+
+    <!-- Modal xem + tóm tắt -->
+    <div id="docModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:2000;align-items:center;justify-content:center;padding:2rem;">
+        <div style="background:white;border-radius:20px;padding:2.5rem;max-width:600px;width:100%;position:relative;">
+            <button id="modalClose" style="position:absolute;top:1rem;right:1rem;background:#f7fafc;border:none;width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:1rem;color:#4a5568;">✕</button>
+            <h2 id="modalTitle" style="font-size:1.4rem;font-weight:700;margin-bottom:1.5rem;color:#1a202c;"></h2>
+            <div style="background:#f0f4ff;border-radius:12px;padding:1.5rem;border-left:4px solid #667eea;">
+                <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem;font-weight:600;color:#667eea;">
+                    <i class="fas fa-brain"></i> Tóm tắt tự động (AI)
+                </div>
+                <p id="summaryText" style="color:#4a5568;line-height:1.7;font-size:.95rem;"></p>
+            </div>
+            <div style="margin-top:1.5rem;display:flex;gap:1rem;">
+                <button class="btn-view" style="flex:1;" onclick="alert('Đang mở tài liệu đầy đủ...')"><i class="fas fa-eye"></i> Xem đầy đủ</button>
+                <button class="btn-view" style="flex:1;background:linear-gradient(135deg,#43e97b,#38f9d7);" onclick="alert('Đang tải xuống...')"><i class="fas fa-download"></i> Tải xuống</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('docModal').style.display = 'flex';
+        document.getElementById('docModal').style.display = 'none';
+    </script>
+</body>
+</html>

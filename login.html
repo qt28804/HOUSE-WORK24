@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập - HOUSE WORK</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            background: #f7fafc;
+        }
+
+        /* Left panel */
+        .login-left {
+            flex: 1;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 60%, #f093fb 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-left::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><pattern id="g" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0L0 0 0 40" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/></pattern></defs><rect width="100%25" height="100%25" fill="url(%23g)"/></svg>');
+        }
+
+        .left-content { position: relative; z-index: 2; text-align: center; color: white; max-width: 420px; }
+
+        .brand { display: flex; align-items: center; gap: 0.75rem; justify-content: center; margin-bottom: 3rem; }
+        .brand i { font-size: 2rem; }
+        .brand span { font-size: 1.8rem; font-weight: 800; }
+
+        .left-title { font-size: clamp(1.8rem, 3vw, 2.5rem); font-weight: 700; line-height: 1.2; margin-bottom: 1rem; }
+        .left-desc { font-size: 1rem; opacity: 0.85; line-height: 1.7; margin-bottom: 3rem; }
+
+        .feature-list { list-style: none; text-align: left; }
+        .feature-list li {
+            display: flex; align-items: center; gap: 0.75rem;
+            padding: 0.6rem 0; font-size: 0.95rem; opacity: 0.9;
+        }
+        .feature-list li i { color: #ffd700; font-size: 1rem; width: 20px; }
+
+        /* Floating cards */
+        .float-cards { position: absolute; inset: 0; pointer-events: none; }
+        .fc {
+            position: absolute;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 1.8rem;
+            animation: floatAnim 6s ease-in-out infinite;
+        }
+        .fc-1 { width: 70px; height: 70px; top: 10%; right: 8%; animation-delay: 0s; }
+        .fc-2 { width: 55px; height: 55px; bottom: 20%; right: 15%; animation-delay: 2s; }
+        .fc-3 { width: 60px; height: 60px; top: 55%; left: 5%; animation-delay: 4s; }
+
+        @keyframes floatAnim {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+        }
+
+        /* Right panel */
+        .login-right {
+            width: 480px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 2.5rem;
+            background: white;
+        }
+
+        .login-box { width: 100%; max-width: 380px; }
+
+        .login-box h2 { font-size: 1.8rem; font-weight: 700; color: #1a202c; margin-bottom: 0.4rem; }
+        .login-box .subtitle { color: #718096; font-size: 0.95rem; margin-bottom: 2rem; }
+
+        /* Role tabs */
+        .role-tabs {
+            display: flex;
+            background: #f7fafc;
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 2rem;
+            gap: 4px;
+        }
+        .role-tab {
+            flex: 1; padding: 0.65rem; border: none; background: transparent;
+            border-radius: 9px; cursor: pointer; font-weight: 600; font-size: 0.9rem;
+            color: #718096; transition: all 0.3s; display: flex; align-items: center;
+            justify-content: center; gap: 0.4rem; font-family: 'Inter', sans-serif;
+        }
+        .role-tab.active {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        /* Form */
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; color: #4a5568; margin-bottom: 0.5rem; }
+
+        .input-wrap { position: relative; }
+        .input-wrap i {
+            position: absolute; left: 1rem; top: 50%; transform: translateY(-50%);
+            color: #a0aec0; font-size: 0.95rem; pointer-events: none;
+        }
+        .input-wrap input {
+            width: 100%; padding: 0.85rem 1rem 0.85rem 2.75rem;
+            border: 2px solid #e2e8f0; border-radius: 10px;
+            font-size: 0.95rem; font-family: 'Inter', sans-serif;
+            color: #1a202c; transition: border-color 0.3s, box-shadow 0.3s;
+            outline: none; background: #fafafa;
+        }
+        .input-wrap input:focus { border-color: #667eea; box-shadow: 0 0 0 3px rgba(102,126,234,0.15); background: white; }
+
+        .toggle-pw {
+            position: absolute; right: 1rem; top: 50%; transform: translateY(-50%);
+            background: none; border: none; cursor: pointer; color: #a0aec0;
+            font-size: 0.95rem; padding: 0;
+        }
+        .toggle-pw:hover { color: #667eea; }
+
+        .form-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .remember { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; color: #4a5568; cursor: pointer; }
+        .remember input { width: 16px; height: 16px; accent-color: #667eea; cursor: pointer; }
+        .forgot { font-size: 0.85rem; color: #667eea; text-decoration: none; font-weight: 500; }
+        .forgot:hover { text-decoration: underline; }
+
+        .btn-login {
+            width: 100%; padding: 0.9rem;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white; border: none; border-radius: 10px;
+            font-size: 1rem; font-weight: 700; cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+        }
+        .btn-login:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(102,126,234,0.4); }
+        .btn-login:active { transform: translateY(0); }
+
+        /* Admin badge */
+        .admin-badge {
+            display: flex; align-items: center; gap: 0.75rem;
+            background: #fff5f5; border: 1px solid #fed7d7;
+            border-radius: 10px; padding: 0.75rem 1rem;
+            margin-bottom: 1.5rem; font-size: 0.85rem; color: #c53030;
+        }
+        .admin-badge i { font-size: 1.1rem; }
+
+        /* Error message */
+        .error-msg {
+            background: #fff5f5; border: 1px solid #fed7d7;
+            color: #c53030; padding: 0.75rem 1rem;
+            border-radius: 8px; font-size: 0.85rem;
+            margin-bottom: 1rem; display: none;
+            align-items: center; gap: 0.5rem;
+        }
+        .error-msg.show { display: flex; }
+
+        .divider { text-align: center; color: #a0aec0; font-size: 0.85rem; margin: 1.5rem 0; position: relative; }
+        .divider::before, .divider::after {
+            content: ''; position: absolute; top: 50%; width: 42%; height: 1px; background: #e2e8f0;
+        }
+        .divider::before { left: 0; }
+        .divider::after { right: 0; }
+
+        .register-link { text-align: center; font-size: 0.9rem; color: #718096; margin-top: 1.5rem; }
+        .register-link a { color: #667eea; font-weight: 600; text-decoration: none; }
+        .register-link a:hover { text-decoration: underline; }
+
+        /* Demo accounts hint */
+        .demo-hint {
+            background: #f0f4ff; border-radius: 10px; padding: 1rem;
+            margin-top: 1.5rem; font-size: 0.82rem; color: #4a5568;
+        }
+        .demo-hint strong { color: #667eea; display: block; margin-bottom: 0.4rem; }
+        .demo-hint code { background: white; padding: 0.1rem 0.4rem; border-radius: 4px; font-size: 0.8rem; }
+
+        @media (max-width: 900px) {
+            .login-left { display: none; }
+            .login-right { width: 100%; padding: 2rem 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Left decorative panel -->
+    <div class="login-left">
+        <div class="float-cards">
+            <div class="fc fc-1"><i class="fab fa-react"></i></div>
+            <div class="fc fc-2"><i class="fab fa-python"></i></div>
+            <div class="fc fc-3"><i class="fab fa-node-js"></i></div>
+        </div>
+        <div class="left-content">
+            <div class="brand">
+                <i class="fas fa-microchip"></i>
+                <span>HOUSE WORK</span>
+            </div>
+            <h2 class="left-title">Nền tảng học tập<br>công nghệ hiện đại</h2>
+            <p class="left-desc">Truy cập hàng nghìn tài liệu, làm bài test và theo dõi tiến độ học tập của bạn.</p>
+            <ul class="feature-list">
+                <li><i class="fas fa-book"></i> Thư viện 5000+ tài liệu PDF, Video, Code</li>
+                <li><i class="fas fa-brain"></i> Tóm tắt tài liệu tự động bằng AI</li>
+                <li><i class="fas fa-clipboard-check"></i> Làm bài test ngay sau khi học</li>
+                <li><i class="fas fa-chart-line"></i> Theo dõi tiến độ học tập</li>
+                <li><i class="fas fa-shield-alt"></i> Bảo vệ nội dung, chống copy</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Right login panel -->
+    <div class="login-right">
+        <div class="login-box">
+            <h2>Chào mừng trở lại</h2>
+            <p class="subtitle">Đăng nhập để tiếp tục học tập</p>
+
+            <!-- Role tabs -->
+            <div class="role-tabs">
+                <button class="role-tab active" id="tabStudent" onclick="switchRole('student')">
+                    <i class="fas fa-user-graduate"></i> Học sinh
+                </button>
+                <button class="role-tab" id="tabAdmin" onclick="switchRole('admin')">
+                    <i class="fas fa-user-shield"></i> Admin
+                </button>
+            </div>
+
+            <!-- Admin warning -->
+            <div class="admin-badge" id="adminBadge" style="display:none">
+                <i class="fas fa-lock"></i>
+                <span>Khu vực quản trị — chỉ dành cho giáo viên / admin</span>
+            </div>
+
+            <!-- Error -->
+            <div class="error-msg" id="errorMsg">
+                <i class="fas fa-exclamation-circle"></i>
+                <span id="errorText">Tên đăng nhập hoặc mật khẩu không đúng.</span>
+            </div>
+
+            <!-- Form -->
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label for="username">Tên đăng nhập</label>
+                    <div class="input-wrap">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="username" placeholder="Nhập tên đăng nhập..." autocomplete="username">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Mật khẩu</label>
+                    <div class="input-wrap">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" placeholder="Nhập mật khẩu..." autocomplete="current-password">
+                        <button type="button" class="toggle-pw" onclick="togglePassword()">
+                            <i class="fas fa-eye" id="eyeIcon"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <label class="remember">
+                        <input type="checkbox" id="rememberMe"> Ghi nhớ đăng nhập
+                    </label>
+                    <a href="#" class="forgot">Quên mật khẩu?</a>
+                </div>
+
+                <button type="submit" class="btn-login" id="loginBtn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Đăng nhập</span>
+                </button>
+            </form>
+
+            <div class="register-link">
+                Chưa có tài khoản? <a href="#">Đăng ký ngay</a>
+            </div>
+
+            <!-- Demo hint -->
+            <div class="demo-hint">
+                <strong><i class="fas fa-info-circle"></i> Tài khoản demo</strong>
+                Học sinh: <code>hocsinh</code> / <code>123456</code><br>
+                Admin: <code>admin</code> / <code>admin123</code>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentRole = 'student';
+
+        function switchRole(role) {
+            currentRole = role;
+            document.getElementById('tabStudent').classList.toggle('active', role === 'student');
+            document.getElementById('tabAdmin').classList.toggle('active', role === 'admin');
+            document.getElementById('adminBadge').style.display = role === 'admin' ? 'flex' : 'none';
+            document.getElementById('errorMsg').classList.remove('show');
+        }
+
+        function togglePassword() {
+            const pw = document.getElementById('password');
+            const icon = document.getElementById('eyeIcon');
+            if (pw.type === 'password') {
+                pw.type = 'text';
+                icon.className = 'fas fa-eye-slash';
+            } else {
+                pw.type = 'password';
+                icon.className = 'fas fa-eye';
+            }
+        }
+
+        // Demo accounts
+        const accounts = {
+            student: { username: 'hocsinh', password: '123456', redirect: 'trang chu.html' },
+            admin:   { username: 'admin',   password: 'admin123', redirect: 'admin.html' }
+        };
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const remember = document.getElementById('rememberMe').checked;
+            const btn = document.getElementById('loginBtn');
+            const errorMsg = document.getElementById('errorMsg');
+
+            // Loading state
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang đăng nhập...';
+            btn.disabled = true;
+            errorMsg.classList.remove('show');
+
+            setTimeout(() => {
+                const acc = accounts[currentRole];
+                if (username === acc.username && password === acc.password) {
+                    // Lưu thông tin đăng nhập vào storage
+                    const userData = JSON.stringify({ username, role: currentRole, displayName: currentRole === 'admin' ? 'Admin' : username });
+                    if (remember) {
+                        localStorage.setItem('hw_user', userData);
+                    } else {
+                        sessionStorage.setItem('hw_user', userData);
+                    }
+
+                    btn.innerHTML = '<i class="fas fa-check"></i> Thành công!';
+                    btn.style.background = 'linear-gradient(135deg, #43e97b, #38f9d7)';
+                    setTimeout(() => { window.location.href = acc.redirect; }, 800);
+                } else {
+                    btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Đăng nhập';
+                    btn.disabled = false;
+                    document.getElementById('errorText').textContent =
+                        currentRole === 'admin'
+                            ? 'Sai thông tin admin. Vui lòng kiểm tra lại.'
+                            : 'Tên đăng nhập hoặc mật khẩu không đúng.';
+                    errorMsg.classList.add('show');
+                    document.getElementById('password').value = '';
+                }
+            }, 900);
+        }
+
+        // Nếu đã đăng nhập rồi thì chuyển thẳng vào trang chủ
+        (function() {
+            const stored = localStorage.getItem('hw_user') || sessionStorage.getItem('hw_user');
+            if (stored) {
+                try {
+                    const u = JSON.parse(stored);
+                    window.location.href = u.role === 'admin' ? 'admin.html' : 'trang chu.html';
+                } catch(e) {}
+            }
+        })();
+
+        // Enter key
+        document.getElementById('password').addEventListener('keydown', e => {
+            if (e.key === 'Enter') document.getElementById('loginForm').requestSubmit();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,415 @@
+/* ============================================================
+   tailieu.css — CSS riêng cho trang Tài liệu
+   ============================================================ */
+
+/* Active nav link */
+.nav-item.active .nav-link { color: #667eea; }
+.nav-item.active .nav-link::after { width: 100%; }
+
+/* ── Hero ── */
+.docs-hero {
+    min-height: 38vh;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    padding: 110px 0 55px;
+    position: relative;
+    overflow: hidden;
+}
+.docs-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/></pattern></defs><rect width="100%25" height="100%25" fill="url(%23grid)"/></svg>');
+    opacity: 0.3;
+}
+.docs-hero-content { position: relative; z-index: 2; text-align: center; }
+.docs-hero-title {
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 700;
+    color: white;
+    margin-bottom: 0.75rem;
+}
+.docs-hero-desc {
+    font-size: 1.05rem;
+    color: rgba(255,255,255,0.85);
+    margin-bottom: 2rem;
+}
+.docs-search {
+    display: flex;
+    align-items: center;
+    max-width: 580px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 50px;
+    padding: 0.45rem 0.45rem 0.45rem 1.4rem;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+.docs-search input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    font-family: 'Inter', sans-serif;
+    color: #1a202c;
+    background: transparent;
+}
+.search-btn {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    padding: 0.7rem 1.4rem;
+    border-radius: 50px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: opacity 0.3s;
+}
+.search-btn:hover { opacity: 0.9; }
+
+/* ── Subject Tab Bar ── */
+.subject-tab-bar {
+    background: white;
+    border-bottom: 2px solid #e2e8f0;
+    position: sticky;
+    top: 70px;
+    z-index: 200;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.subject-tab-bar .container {
+    position: relative;
+}
+.subject-tab-inner {
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+    position: relative;
+}
+.subject-tab-inner::-webkit-scrollbar { display: none; }
+
+/* Sliding indicator */
+.tab-indicator {
+    position: absolute;
+    bottom: -2px;
+    height: 3px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 3px 3px 0 0;
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+}
+
+.subject-tab-btn {
+    flex-shrink: 0;
+    padding: 1rem 1.3rem;
+    border: none;
+    background: transparent;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #718096;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    transition: color 0.25s;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    white-space: nowrap;
+    position: relative;
+}
+.subject-tab-btn:hover { color: #667eea; }
+.subject-tab-btn.active { color: #667eea; }
+.subject-tab-btn .tab-icon { font-size: 0.95rem; }
+
+/* Icon colors per subject */
+.subject-tab-btn[data-subject="tat-ca"]    .tab-icon { color: #667eea; }
+.subject-tab-btn[data-subject="toan"]      .tab-icon { color: #e53e3e; }
+.subject-tab-btn[data-subject="ly"]        .tab-icon { color: #3182ce; }
+.subject-tab-btn[data-subject="hoa"]       .tab-icon { color: #38a169; }
+.subject-tab-btn[data-subject="tin"]       .tab-icon { color: #805ad5; }
+.subject-tab-btn[data-subject="su"]        .tab-icon { color: #d69e2e; }
+.subject-tab-btn[data-subject="cong-nghe"] .tab-icon { color: #dd6b20; }
+.subject-tab-btn[data-subject="tieng-anh"] .tab-icon { color: #00b5d8; }
+.subject-tab-btn[data-subject="tong-de"]   .tab-icon { color: #e53e3e; }
+
+/* ── Main layout ── */
+.docs-layout {
+    display: grid;
+    grid-template-columns: 230px 1fr;
+    gap: 0;
+    min-height: 70vh;
+}
+
+/* ── Sidebar (chapter nav) ── */
+.docs-sidebar {
+    background: #f7fafc;
+    border-right: 1px solid #e2e8f0;
+    padding: 1.5rem 0;
+    position: sticky;
+    top: 118px;
+    height: calc(100vh - 118px);
+    overflow-y: auto;
+}
+.sidebar-section-title {
+    padding: 0.5rem 1.4rem;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: #a0aec0;
+    font-weight: 700;
+}
+.sidebar-link {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.6rem 1.4rem;
+    font-size: 0.88rem;
+    color: #4a5568;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    transition: background 0.18s, color 0.18s, border-color 0.18s;
+    background: none;
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+    width: 100%;
+    text-align: left;
+    font-family: 'Inter', sans-serif;
+}
+.sidebar-link:hover { background: #edf2f7; color: #667eea; }
+.sidebar-link.active {
+    background: #ebf4ff;
+    color: #667eea;
+    border-left-color: #667eea;
+    font-weight: 600;
+}
+.sidebar-link .count {
+    margin-left: auto;
+    background: #e2e8f0;
+    color: #718096;
+    font-size: 0.7rem;
+    padding: 0.1rem 0.45rem;
+    border-radius: 20px;
+    font-weight: 600;
+}
+.sidebar-link.active .count { background: #bee3f8; color: #2b6cb0; }
+
+/* ── Content area ── */
+.docs-content { padding: 2rem 2rem; background: white; }
+
+.content-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 1.75rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+.content-header h2 { font-size: 1.4rem; font-weight: 700; color: #1a202c; }
+.content-header p { color: #718096; font-size: 0.88rem; margin-top: 0.2rem; }
+.sort-select {
+    padding: 0.5rem 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    color: #4a5568;
+    outline: none;
+    cursor: pointer;
+    background: white;
+}
+
+/* ── Doc cards grid ── */
+.docs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    gap: 1.2rem;
+    align-items: stretch; /* tất cả card trong cùng hàng cao bằng nhau */
+}
+.doc-card {
+    background: white;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 14px;
+    padding: 1.4rem;
+    transition: transform 0.22s, box-shadow 0.22s;
+    position: relative;
+    overflow: hidden;
+    /* Card cao đều nhau, nút luôn dưới cùng */
+    display: flex;
+    flex-direction: column;
+}
+.doc-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    transform: scaleX(0);
+    transition: transform 0.28s;
+}
+.doc-card:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0,0,0,0.09); }
+.doc-card:hover::before { transform: scaleX(1); }
+
+/* Accent top bar per subject */
+.doc-card[data-subject="toan"]::before      { background: linear-gradient(90deg,#e53e3e,#fc8181); }
+.doc-card[data-subject="ly"]::before        { background: linear-gradient(90deg,#3182ce,#63b3ed); }
+.doc-card[data-subject="hoa"]::before       { background: linear-gradient(90deg,#38a169,#68d391); }
+.doc-card[data-subject="tin"]::before       { background: linear-gradient(90deg,#805ad5,#b794f4); }
+.doc-card[data-subject="su"]::before        { background: linear-gradient(90deg,#d69e2e,#f6e05e); }
+.doc-card[data-subject="cong-nghe"]::before { background: linear-gradient(90deg,#dd6b20,#fbd38d); }
+.doc-card[data-subject="tieng-anh"]::before { background: linear-gradient(90deg,#00b5d8,#76e4f7); }
+.doc-card[data-subject="tong-de"]::before   { background: linear-gradient(90deg,#e53e3e,#667eea); }
+
+.doc-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.7rem;
+}
+.doc-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.22rem 0.65rem;
+    border-radius: 20px;
+    font-size: 0.73rem;
+    font-weight: 700;
+}
+.badge-toan      { background: #fff5f5; color: #c53030; }
+.badge-ly        { background: #ebf8ff; color: #2b6cb0; }
+.badge-hoa       { background: #f0fff4; color: #276749; }
+.badge-tin       { background: #faf5ff; color: #6b46c1; }
+.badge-su        { background: #fffff0; color: #975a16; }
+.badge-cong-nghe { background: #fffaf0; color: #c05621; }
+.badge-tieng-anh { background: #e6fffa; color: #086f83; }
+.badge-tong-de   { background: #fff5f5; color: #c53030; }
+
+.doc-card-actions { display: flex; gap: 0.45rem; color: #a0aec0; }
+.doc-card-actions i { cursor: pointer; transition: color 0.2s; font-size: 0.95rem; }
+.doc-card-actions i:hover { color: #667eea; }
+
+.doc-card h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #1a202c;
+    margin-bottom: 0.35rem;
+    line-height: 1.4;
+}
+.doc-card p {
+    color: #718096;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    margin-bottom: 0.9rem;
+    flex: 1; /* đẩy phần meta + nút xuống đáy */
+    /* Giới hạn 3 dòng để tất cả card đều nhau */
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+.doc-card-meta {
+    display: flex;
+    gap: 0.9rem;
+    font-size: 0.78rem;
+    color: #a0aec0;
+    flex-wrap: wrap;
+}
+.doc-card-meta i { margin-right: 0.18rem; }
+.doc-card-footer {
+    margin-top: 0.9rem;
+    padding-top: 0.9rem;
+    border-top: 1px solid #f0f4f8;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    /* Luôn nằm dưới cùng của card */
+    margin-top: auto;
+    padding-top: 0.9rem;
+}
+.btn-read {
+    padding: 0.55rem 0.5rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: opacity 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    width: 100%;
+}
+.btn-read-primary  { background: linear-gradient(135deg,#667eea,#764ba2); color: white; }
+.btn-read-secondary { background: #f7fafc; color: #4a5568; border: 1.5px solid #e2e8f0; }
+.btn-read:hover { opacity: 0.85; }
+
+/* ── No results ── */
+.no-results {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #a0aec0;
+    display: none;
+}
+.no-results i { font-size: 3rem; margin-bottom: 1rem; display: block; }
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+    .docs-layout { grid-template-columns: 1fr; }
+    .docs-sidebar {
+        position: static;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid #e2e8f0;
+        padding: 0.75rem 0;
+        /* Horizontal scroll on mobile */
+        display: flex;
+        overflow-x: auto;
+    }
+    .docs-sidebar .sidebar-section-title { display: none; }
+    .sidebar-link {
+        flex-shrink: 0;
+        border-left: none;
+        border-bottom: 3px solid transparent;
+        padding: 0.6rem 1rem;
+        white-space: nowrap;
+    }
+    .sidebar-link.active {
+        border-left: none;
+        border-bottom-color: #667eea;
+        background: transparent;
+    }
+    .docs-content { padding: 1.25rem 1rem; }
+}
+@media (max-width: 600px) {
+    .docs-grid { grid-template-columns: 1fr; }
+    .subject-tab-btn { padding: 0.85rem 0.9rem; font-size: 0.82rem; }
+}
+
+/* ── Inline icon buttons (star / bookmark) ── */
+.btn-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #a0aec0;
+    font-size: 1rem;
+    padding: 0.2rem;
+    transition: color 0.2s;
+    line-height: 1;
+}
+.btn-icon:hover { color: #667eea; }
+
+/* Sidebar count badge (alias for .count) */
+.sidebar-count {
+    margin-left: auto;
+    background: #e2e8f0;
+    color: #718096;
+    font-size: 0.7rem;
+    padding: 0.1rem 0.45rem;
+    border-radius: 20px;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+.sidebar-link.active .sidebar-count { background: #bee3f8; color: #2b6cb0; }

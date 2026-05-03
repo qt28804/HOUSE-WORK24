@@ -1,0 +1,1236 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài test - HOUSE WORK</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+/* ── Reset & Base ── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Inter', sans-serif; line-height: 1.6; color: #1a202c; overflow-x: hidden; background: #f7fafc; }
+.container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+/* ── Navbar ── */
+.navbar {
+    position: fixed; top: 0; width: 100%;
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(20px);
+    z-index: 1000;
+    transition: all 0.3s ease;
+    border-bottom: 1px solid transparent;
+}
+.navbar.scrolled { box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-bottom-color: #e2e8f0; }
+.nav-container {
+    max-width: 1200px; margin: 0 auto; padding: 1rem 20px;
+    display: flex; justify-content: space-between; align-items: center;
+}
+.nav-logo { display: flex; align-items: center; font-size: 1.4rem; font-weight: 700; color: #1a202c; text-decoration: none; gap: .5rem; }
+.nav-logo i { background: linear-gradient(135deg,#667eea,#764ba2); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+.nav-menu { display: flex; list-style: none; gap: 1.8rem; }
+.nav-link { text-decoration: none; color: #4a5568; font-weight: 500; font-size: .92rem; position: relative; transition: color .3s; }
+.nav-link::after { content: ''; position: absolute; bottom: -5px; left: 0; width: 0; height: 2px; background: linear-gradient(135deg,#667eea,#764ba2); transition: width .3s; }
+.nav-link:hover { color: #667eea; }
+.nav-link:hover::after { width: 100%; }
+.nav-item.active .nav-link { color: #667eea; }
+.nav-item.active .nav-link::after { width: 100%; }
+.hamburger { display: none; flex-direction: column; cursor: pointer; gap: 5px; }
+.bar { width: 25px; height: 3px; background: #1a202c; border-radius: 3px; transition: .3s; }
+
+/* ── Hero ── */
+.test-hero {
+    min-height: 38vh;
+    display: flex; align-items: center;
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    padding: 110px 0 55px;
+    position: relative; overflow: hidden;
+}
+.test-hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><pattern id="g" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0L0 0 0 40" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="1"/></pattern></defs><rect width="100%25" height="100%25" fill="url(%23g)"/></svg>');
+    opacity: .4;
+}
+.test-hero-content { position: relative; z-index: 2; text-align: center; }
+.test-hero-title { font-size: clamp(2rem,4vw,3rem); font-weight: 800; color: white; margin-bottom: .75rem; text-shadow: 0 2px 12px rgba(0,0,0,.15); }
+.test-hero-desc { font-size: 1.05rem; color: rgba(255,255,255,.9); }
+
+/* ── Main Content ── */
+.main-content { padding: 60px 0; background: #f7fafc; }
+
+/* ── Action Bar ── */
+.action-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;
+}
+.action-bar-left h2 { font-size: 1.5rem; font-weight: 700; color: #1a202c; }
+.action-bar-left p { color: #718096; font-size: .9rem; margin-top: .2rem; }
+.btn-create {
+    background: linear-gradient(135deg,#667eea,#764ba2);
+    color: white; border: none;
+    padding: .8rem 1.6rem; border-radius: 50px;
+    font-weight: 700; font-size: .95rem; cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    display: flex; align-items: center; gap: .5rem;
+    transition: transform .25s, box-shadow .25s;
+    box-shadow: 0 4px 15px rgba(102,126,234,.4);
+}
+.btn-create:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(102,126,234,.5); }
+
+/* ── Subject Filter Tabs ── */
+.subject-tab-bar {
+    background: white;
+    border-bottom: 2px solid #e2e8f0;
+    border-radius: 12px 12px 0 0;
+    margin-bottom: 0;
+    box-shadow: 0 2px 8px rgba(0,0,0,.04);
+    position: relative;
+}
+.subject-tab-inner {
+    display: flex; gap: 0;
+    overflow-x: auto; scrollbar-width: none;
+    position: relative;
+}
+.subject-tab-inner::-webkit-scrollbar { display: none; }
+.tab-indicator {
+    position: absolute; bottom: -2px; height: 3px;
+    background: linear-gradient(135deg,#667eea,#764ba2);
+    border-radius: 3px 3px 0 0;
+    transition: left .3s cubic-bezier(.4,0,.2,1), width .3s cubic-bezier(.4,0,.2,1);
+    pointer-events: none;
+}
+.subject-tab-btn {
+    flex-shrink: 0;
+    padding: 1rem 1.3rem; border: none; background: transparent;
+    font-family: 'Inter', sans-serif; font-size: .88rem; font-weight: 600;
+    color: #718096; cursor: pointer;
+    border-bottom: 3px solid transparent; margin-bottom: -2px;
+    transition: color .25s;
+    display: flex; align-items: center; gap: .4rem; white-space: nowrap;
+}
+.subject-tab-btn:hover { color: #667eea; }
+.subject-tab-btn.active { color: #667eea; }
+.subject-tab-btn .tab-icon { font-size: .95rem; }
+.subject-tab-btn[data-subject="tat-ca"]    .tab-icon { color: #667eea; }
+.subject-tab-btn[data-subject="toan"]      .tab-icon { color: #e53e3e; }
+.subject-tab-btn[data-subject="ly"]        .tab-icon { color: #3182ce; }
+.subject-tab-btn[data-subject="hoa"]       .tab-icon { color: #38a169; }
+.subject-tab-btn[data-subject="tin"]       .tab-icon { color: #805ad5; }
+.subject-tab-btn[data-subject="su"]        .tab-icon { color: #d69e2e; }
+.subject-tab-btn[data-subject="cong-nghe"] .tab-icon { color: #dd6b20; }
+.subject-tab-btn[data-subject="tieng-anh"] .tab-icon { color: #00b5d8; }
+
+/* ── Exam Cards Grid ── */
+.exams-grid-wrap {
+    background: white;
+    border-radius: 0 0 12px 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,.04);
+}
+.exams-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.25rem;
+}
+.exam-card {
+    background: white;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 14px;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    transition: transform .25s, box-shadow .25s;
+    position: relative;
+}
+.exam-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,.1); }
+.exam-card-top-border { height: 3px; width: 100%; flex-shrink: 0; }
+.exam-card-body { padding: 1.25rem; flex: 1; display: flex; flex-direction: column; }
+.exam-subject-badge {
+    display: inline-flex; align-items: center; gap: .3rem;
+    padding: .22rem .65rem; border-radius: 20px;
+    font-size: .73rem; font-weight: 700;
+    margin-bottom: .75rem; width: fit-content;
+}
+.exam-card h3 { font-size: 1rem; font-weight: 700; color: #1a202c; margin-bottom: .4rem; line-height: 1.4; }
+.exam-card p { color: #718096; font-size: .85rem; line-height: 1.6; flex: 1; margin-bottom: .9rem; }
+.exam-meta {
+    display: flex; gap: .6rem; flex-wrap: wrap;
+    font-size: .78rem; color: #718096; margin-bottom: .9rem;
+    align-items: center;
+}
+.exam-meta-item { display: flex; align-items: center; gap: .25rem; }
+.exam-meta-item i { font-size: .75rem; }
+.level-badge {
+    padding: .15rem .55rem; border-radius: 20px;
+    font-size: .72rem; font-weight: 700;
+}
+.level-de    { background: #f0fff4; color: #276749; }
+.level-tb    { background: #fffbeb; color: #92400e; }
+.level-kho   { background: #fff5f5; color: #c53030; }
+.exam-card-footer { padding: 0 1.25rem 1.25rem; margin-top: auto; }
+.btn-start {
+    width: 100%; padding: .7rem;
+    background: linear-gradient(135deg,#667eea,#764ba2);
+    color: white; border: none; border-radius: 10px;
+    font-family: 'Inter', sans-serif; font-size: .9rem; font-weight: 700;
+    cursor: pointer; transition: opacity .2s, transform .2s;
+    display: flex; align-items: center; justify-content: center; gap: .4rem;
+}
+.btn-start:hover { opacity: .9; transform: translateY(-1px); }
+
+/* Subject badge colors */
+.badge-toan      { background: #fff5f5; color: #c53030; }
+.badge-ly        { background: #ebf8ff; color: #2b6cb0; }
+.badge-hoa       { background: #f0fff4; color: #276749; }
+.badge-tin       { background: #faf5ff; color: #6b46c1; }
+.badge-su        { background: #fffff0; color: #975a16; }
+.badge-cong-nghe { background: #fffaf0; color: #c05621; }
+.badge-tieng-anh { background: #e6fffa; color: #086f83; }
+
+/* Top border colors */
+.border-toan      { background: linear-gradient(90deg,#e53e3e,#fc8181); }
+.border-ly        { background: linear-gradient(90deg,#3182ce,#63b3ed); }
+.border-hoa       { background: linear-gradient(90deg,#38a169,#68d391); }
+.border-tin       { background: linear-gradient(90deg,#805ad5,#b794f4); }
+.border-su        { background: linear-gradient(90deg,#d69e2e,#f6e05e); }
+.border-cong-nghe { background: linear-gradient(90deg,#dd6b20,#fbd38d); }
+.border-tieng-anh { background: linear-gradient(90deg,#00b5d8,#76e4f7); }
+
+/* No results */
+.no-results { text-align: center; padding: 4rem 2rem; color: #a0aec0; display: none; }
+.no-results i { font-size: 3rem; margin-bottom: 1rem; display: block; }
+
+/* ── Modal Overlay ── */
+.modal-overlay {
+    display: none; position: fixed; inset: 0; z-index: 3000;
+    background: rgba(0,0,0,.75); backdrop-filter: blur(4px);
+    align-items: center; justify-content: center; padding: 1rem;
+}
+.modal-overlay.open { display: flex; }
+
+/* ── Quiz Modal ── */
+.quiz-modal {
+    background: white; border-radius: 20px;
+    width: 100%; max-width: 760px;
+    max-height: 92vh; overflow-y: auto;
+    box-shadow: 0 30px 80px rgba(0,0,0,.4);
+    display: flex; flex-direction: column;
+}
+.quiz-header {
+    background: linear-gradient(135deg,#667eea,#764ba2);
+    padding: 1.25rem 1.5rem;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: .75rem; flex-shrink: 0;
+    border-radius: 20px 20px 0 0;
+}
+.quiz-header-left h3 { color: white; font-size: 1.05rem; font-weight: 700; }
+.quiz-header-left p  { color: rgba(255,255,255,.8); font-size: .82rem; margin-top: .15rem; }
+.quiz-timer {
+    background: rgba(255,255,255,.2); color: white;
+    padding: .45rem 1rem; border-radius: 50px;
+    font-weight: 700; font-size: 1rem;
+    display: flex; align-items: center; gap: .4rem;
+    transition: background .3s;
+}
+.quiz-timer.urgent { background: rgba(245,87,108,.85); animation: timerPulse .8s ease-in-out infinite; }
+@keyframes timerPulse { 0%,100%{opacity:1} 50%{opacity:.7} }
+
+.quiz-progress-bar-wrap { padding: .75rem 1.5rem; background: #f7fafc; flex-shrink: 0; }
+.quiz-progress-label { display: flex; justify-content: space-between; font-size: .8rem; color: #718096; margin-bottom: .4rem; }
+.quiz-progress-bar { height: 6px; background: #e2e8f0; border-radius: 3px; overflow: hidden; }
+.quiz-progress-fill { height: 100%; background: linear-gradient(90deg,#667eea,#764ba2); border-radius: 3px; transition: width .4s ease; }
+
+.quiz-body { padding: 1.5rem; flex: 1; }
+.question-card { background: #f7fafc; border-radius: 14px; padding: 1.5rem; margin-bottom: 1.25rem; }
+.question-number { font-size: .78rem; font-weight: 700; color: #667eea; text-transform: uppercase; letter-spacing: .8px; margin-bottom: .6rem; }
+.question-text { font-size: 1.05rem; font-weight: 600; color: #1a202c; line-height: 1.6; }
+
+.options-list { display: flex; flex-direction: column; gap: .65rem; }
+.option-item {
+    display: flex; align-items: center; gap: .85rem;
+    padding: .85rem 1.1rem; border-radius: 10px;
+    border: 2px solid #e2e8f0; background: white;
+    cursor: pointer; transition: border-color .2s, background .2s;
+    font-size: .92rem; color: #4a5568;
+}
+.option-item:hover { border-color: #667eea; background: #f0f4ff; }
+.option-item input[type="radio"] { display: none; }
+.option-item.selected { border-color: #667eea; background: #ebf4ff; color: #2b6cb0; font-weight: 600; }
+.option-item.correct  { border-color: #38a169; background: #f0fff4; color: #276749; font-weight: 600; }
+.option-item.wrong    { border-color: #e53e3e; background: #fff5f5; color: #c53030; font-weight: 600; }
+.option-letter {
+    width: 30px; height: 30px; border-radius: 50%;
+    background: #e2e8f0; color: #4a5568;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: .82rem; flex-shrink: 0;
+    transition: background .2s, color .2s;
+}
+.option-item.selected .option-letter { background: #667eea; color: white; }
+.option-item.correct  .option-letter { background: #38a169; color: white; }
+.option-item.wrong    .option-letter { background: #e53e3e; color: white; }
+
+.quiz-nav {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1rem 1.5rem; border-top: 1px solid #e2e8f0; flex-shrink: 0;
+    gap: .75rem; flex-wrap: wrap;
+}
+.btn-nav {
+    padding: .65rem 1.4rem; border-radius: 50px;
+    font-family: 'Inter', sans-serif; font-size: .88rem; font-weight: 600;
+    cursor: pointer; transition: all .2s;
+    display: flex; align-items: center; gap: .4rem;
+}
+.btn-nav-secondary { background: #f7fafc; color: #4a5568; border: 2px solid #e2e8f0; }
+.btn-nav-secondary:hover { background: #edf2f7; border-color: #cbd5e0; }
+.btn-nav-primary { background: linear-gradient(135deg,#667eea,#764ba2); color: white; border: none; box-shadow: 0 4px 12px rgba(102,126,234,.35); }
+.btn-nav-primary:hover { opacity: .9; transform: translateY(-1px); }
+.btn-nav-danger { background: linear-gradient(135deg,#f5576c,#f093fb); color: white; border: none; box-shadow: 0 4px 12px rgba(245,87,108,.35); }
+.btn-nav-danger:hover { opacity: .9; transform: translateY(-1px); }
+
+/* ── Create Modal ── */
+.create-modal {
+    background: white; border-radius: 20px;
+    width: 100%; max-width: 520px;
+    max-height: 92vh; overflow-y: auto;
+    box-shadow: 0 30px 80px rgba(0,0,0,.4);
+}
+.create-modal-header {
+    background: linear-gradient(135deg,#667eea,#764ba2);
+    padding: 1.5rem; border-radius: 20px 20px 0 0;
+    display: flex; align-items: center; justify-content: space-between;
+}
+.create-modal-header h3 { color: white; font-size: 1.1rem; font-weight: 700; }
+.create-modal-header p  { color: rgba(255,255,255,.8); font-size: .82rem; margin-top: .2rem; }
+.btn-close-modal {
+    background: rgba(255,255,255,.2); border: none; color: white;
+    width: 34px; height: 34px; border-radius: 50%;
+    cursor: pointer; font-size: 1rem;
+    display: flex; align-items: center; justify-content: center;
+    transition: background .2s; flex-shrink: 0;
+}
+.btn-close-modal:hover { background: rgba(255,255,255,.35); }
+.create-modal-body { padding: 1.5rem; }
+.form-group { margin-bottom: 1.1rem; }
+.form-group label { display: block; font-size: .85rem; font-weight: 600; color: #4a5568; margin-bottom: .4rem; }
+.form-control {
+    width: 100%; padding: .65rem 1rem;
+    border: 2px solid #e2e8f0; border-radius: 10px;
+    font-family: 'Inter', sans-serif; font-size: .9rem; color: #1a202c;
+    outline: none; transition: border-color .2s;
+    background: white;
+}
+.form-control:focus { border-color: #667eea; }
+.btn-generate {
+    width: 100%; padding: .85rem;
+    background: linear-gradient(135deg,#667eea,#764ba2);
+    color: white; border: none; border-radius: 50px;
+    font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 700;
+    cursor: pointer; transition: opacity .2s, transform .2s;
+    display: flex; align-items: center; justify-content: center; gap: .5rem;
+    margin-top: .5rem; box-shadow: 0 4px 15px rgba(102,126,234,.4);
+}
+.btn-generate:hover { opacity: .9; transform: translateY(-2px); }
+
+/* ── Result Modal ── */
+.result-modal {
+    background: white; border-radius: 20px;
+    width: 100%; max-width: 480px;
+    box-shadow: 0 30px 80px rgba(0,0,0,.4);
+    text-align: center; overflow: hidden;
+}
+.result-header { padding: 2rem 1.5rem 1.5rem; }
+.result-trophy { font-size: 4rem; margin-bottom: .75rem; display: block; }
+.result-score { font-size: 2.5rem; font-weight: 800; margin-bottom: .3rem; }
+.result-percent { font-size: 1.1rem; font-weight: 600; margin-bottom: .5rem; }
+.result-message { color: #718096; font-size: .95rem; line-height: 1.6; }
+.result-body { padding: 0 1.5rem 1.5rem; }
+.result-actions { display: flex; gap: .75rem; flex-wrap: wrap; }
+.result-actions button {
+    flex: 1; padding: .75rem;
+    border-radius: 50px; font-family: 'Inter', sans-serif;
+    font-size: .9rem; font-weight: 700; cursor: pointer;
+    transition: all .2s; border: none;
+    display: flex; align-items: center; justify-content: center; gap: .4rem;
+}
+.btn-review { background: #f7fafc; color: #4a5568; border: 2px solid #e2e8f0 !important; }
+.btn-review:hover { background: #edf2f7; }
+.btn-retry { background: linear-gradient(135deg,#667eea,#764ba2); color: white; box-shadow: 0 4px 12px rgba(102,126,234,.35); }
+.btn-retry:hover { opacity: .9; transform: translateY(-1px); }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+    .hamburger { display: flex; }
+    .nav-menu {
+        position: fixed; left: -100%; top: 70px;
+        flex-direction: column; background: white; width: 100%;
+        text-align: center; transition: .3s;
+        box-shadow: 0 10px 27px rgba(0,0,0,.05); padding: 2rem 0;
+    }
+    .nav-menu.active { left: 0; }
+    .exams-grid { grid-template-columns: 1fr; }
+    .action-bar { flex-direction: column; align-items: flex-start; }
+    .quiz-header { flex-direction: column; align-items: flex-start; }
+    .result-actions { flex-direction: column; }
+}
+@media (max-width: 480px) {
+    .subject-tab-btn { padding: .85rem .9rem; font-size: .82rem; }
+    .quiz-body { padding: 1rem; }
+    .question-card { padding: 1.1rem; }
+}
+    </style>
+</head>
+<body>
+
+    <!-- ── Navigation ── -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-microchip"></i>
+                <span>HOUSE WORK</span>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li class="nav-item"><a href="trang chu.html" class="nav-link">Trang chủ</a></li>
+                <li class="nav-item"><a href="Tài liệu.html" class="nav-link">Tài liệu</a></li>
+                <li class="nav-item"><a href="thu-vien.html" class="nav-link">Thư viện</a></li>
+                <li class="nav-item active"><a href="test.html" class="nav-link">Bài test</a></li>
+                <li class="nav-item"><a href="tien-do.html" class="nav-link">Tiến độ</a></li>
+                <li class="nav-item"><a href="am-nhac.html" class="nav-link"><i class="fas fa-music" style="color:#f093fb;margin-right:.3rem"></i>Âm nhạc</a></li>
+            </ul>
+            <div id="navAuthArea"></div>
+            <div class="hamburger" id="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ── Hero ── -->
+    <section class="test-hero">
+        <div class="container">
+            <div class="test-hero-content">
+                <h1 class="test-hero-title"><i class="fas fa-clipboard-check"></i> Bài kiểm tra</h1>
+                <p class="test-hero-desc">Chọn đề hoặc tự tạo bài kiểm tra của bạn</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Main Content ── -->
+    <section class="main-content">
+        <div class="container">
+
+            <!-- Action Bar -->
+            <div class="action-bar">
+                <div class="action-bar-left">
+                    <h2>Chọn đề thi</h2>
+                    <p>Làm bài trực tiếp trên web</p>
+                </div>
+                <button class="btn-create" onclick="openCreateModal()">
+                    <i class="fas fa-magic"></i> ✨ Tự tạo bài kiểm tra
+                </button>
+            </div>
+
+            <!-- Subject Filter Tabs -->
+            <div class="subject-tab-bar">
+                <div class="subject-tab-inner" id="subjectTabInner">
+                    <div class="tab-indicator" id="tabIndicator"></div>
+                    <button class="subject-tab-btn active" data-subject="tat-ca" onclick="filterExams(this,'tat-ca')">
+                        <i class="fas fa-th tab-icon"></i> Tất cả
+                    </button>
+                    <button class="subject-tab-btn" data-subject="toan" onclick="filterExams(this,'toan')">
+                        <i class="fas fa-square-root-alt tab-icon"></i> Toán
+                    </button>
+                    <button class="subject-tab-btn" data-subject="ly" onclick="filterExams(this,'ly')">
+                        <i class="fas fa-atom tab-icon"></i> Vật lý
+                    </button>
+                    <button class="subject-tab-btn" data-subject="hoa" onclick="filterExams(this,'hoa')">
+                        <i class="fas fa-flask tab-icon"></i> Hóa học
+                    </button>
+                    <button class="subject-tab-btn" data-subject="tin" onclick="filterExams(this,'tin')">
+                        <i class="fas fa-laptop-code tab-icon"></i> Tin học
+                    </button>
+                    <button class="subject-tab-btn" data-subject="su" onclick="filterExams(this,'su')">
+                        <i class="fas fa-landmark tab-icon"></i> Lịch sử
+                    </button>
+                    <button class="subject-tab-btn" data-subject="cong-nghe" onclick="filterExams(this,'cong-nghe')">
+                        <i class="fas fa-cogs tab-icon"></i> Công nghệ
+                    </button>
+                    <button class="subject-tab-btn" data-subject="tieng-anh" onclick="filterExams(this,'tieng-anh')">
+                        <i class="fas fa-language tab-icon"></i> Tiếng Anh
+                    </button>
+                </div>
+            </div>
+
+            <!-- Exam Cards Grid -->
+            <div class="exams-grid-wrap">
+                <div class="exams-grid" id="examsGrid"></div>
+                <div class="no-results" id="noResults">
+                    <i class="fas fa-search"></i>
+                    <p>Không có đề thi nào cho môn này.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════════════════
+         QUIZ MODAL
+    ══════════════════════════════════════════ -->
+    <div class="modal-overlay" id="quizOverlay">
+        <div class="quiz-modal" id="quizModal">
+            <!-- Header -->
+            <div class="quiz-header">
+                <div class="quiz-header-left">
+                    <h3 id="quizTitle">Đề thi</h3>
+                    <p id="quizSubtitle">Câu 1 / 5</p>
+                </div>
+                <div class="quiz-timer" id="quizTimer">
+                    <i class="fas fa-clock"></i>
+                    <span id="timerDisplay">15:00</span>
+                </div>
+            </div>
+            <!-- Progress bar -->
+            <div class="quiz-progress-bar-wrap">
+                <div class="quiz-progress-label">
+                    <span id="progressLabel">Câu 1 / 5</span>
+                    <span id="progressPct">0%</span>
+                </div>
+                <div class="quiz-progress-bar">
+                    <div class="quiz-progress-fill" id="progressFill" style="width:0%"></div>
+                </div>
+            </div>
+            <!-- Body -->
+            <div class="quiz-body" id="quizBody">
+                <div class="question-card">
+                    <div class="question-number" id="questionNumber">Câu 1</div>
+                    <div class="question-text" id="questionText"></div>
+                </div>
+                <div class="options-list" id="optionsList"></div>
+            </div>
+            <!-- Navigation -->
+            <div class="quiz-nav">
+                <button class="btn-nav btn-nav-secondary" id="btnPrev" onclick="prevQuestion()">
+                    <i class="fas fa-chevron-left"></i> Câu trước
+                </button>
+                <button class="btn-nav btn-nav-danger" onclick="confirmSubmit()" style="font-size:.82rem;">
+                    <i class="fas fa-paper-plane"></i> Nộp bài
+                </button>
+                <button class="btn-nav btn-nav-primary" id="btnNext" onclick="nextQuestion()">
+                    Câu tiếp theo <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         CREATE MODAL — Nhập đề thủ công
+    ══════════════════════════════════════════ -->
+    <div class="modal-overlay" id="createOverlay" style="align-items:flex-start;padding-top:1rem;">
+        <div class="create-modal" style="max-width:680px;max-height:95vh;">
+            <div class="create-modal-header">
+                <div>
+                    <h3>✏️ Tạo đề kiểm tra thủ công</h3>
+                    <p>Nhập câu hỏi và đáp án của bạn</p>
+                </div>
+                <button class="btn-close-modal" onclick="closeCreateModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="create-modal-body">
+
+                <!-- Thông tin đề -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1rem;">
+                    <div class="form-group" style="margin-bottom:0">
+                        <label><i class="fas fa-tag" style="margin-right:.35rem;color:#667eea"></i>Tên đề thi</label>
+                        <input type="text" class="form-control" id="manualName" placeholder="Ví dụ: Kiểm tra 15 phút...">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0">
+                        <label><i class="fas fa-book" style="margin-right:.35rem;color:#667eea"></i>Môn học</label>
+                        <select class="form-control" id="manualSubject">
+                            <option value="toan">Toán</option>
+                            <option value="ly">Vật lý</option>
+                            <option value="hoa">Hóa học</option>
+                            <option value="tin">Tin học</option>
+                            <option value="su">Lịch sử</option>
+                            <option value="cong-nghe">Công nghệ</option>
+                            <option value="tieng-anh">Tiếng Anh</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0">
+                        <label><i class="fas fa-clock" style="margin-right:.35rem;color:#667eea"></i>Thời gian (phút)</label>
+                        <input type="number" class="form-control" id="manualTime" value="15" min="1" max="120">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0">
+                        <label><i class="fas fa-signal" style="margin-right:.35rem;color:#667eea"></i>Độ khó</label>
+                        <select class="form-control" id="manualLevel">
+                            <option value="Dễ">Dễ</option>
+                            <option value="Trung bình" selected>Trung bình</option>
+                            <option value="Khó">Khó</option>
+                        </select>
+                    </div>
+                </div>
+
+                <hr style="border:none;border-top:1px solid #e2e8f0;margin:1rem 0">
+
+                <!-- Danh sách câu hỏi -->
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;">
+                    <span style="font-size:.85rem;font-weight:700;color:#4a5568;">
+                        <i class="fas fa-list-ol" style="color:#667eea;margin-right:.35rem"></i>
+                        Câu hỏi (<span id="qCount">0</span>)
+                    </span>
+                    <button onclick="addQuestion()" style="
+                        background:linear-gradient(135deg,#43e97b,#38f9d7);
+                        color:white;border:none;padding:.45rem 1rem;border-radius:50px;
+                        font-family:'Inter',sans-serif;font-size:.82rem;font-weight:700;
+                        cursor:pointer;display:flex;align-items:center;gap:.35rem;">
+                        <i class="fas fa-plus"></i> Thêm câu hỏi
+                    </button>
+                </div>
+
+                <div id="questionsList" style="display:flex;flex-direction:column;gap:1rem;max-height:380px;overflow-y:auto;padding-right:4px;"></div>
+
+                <div id="emptyQMsg" style="text-align:center;padding:2rem;color:#a0aec0;font-size:.9rem;">
+                    <i class="fas fa-plus-circle" style="font-size:2rem;display:block;margin-bottom:.5rem;opacity:.4"></i>
+                    Nhấn "Thêm câu hỏi" để bắt đầu
+                </div>
+
+                <hr style="border:none;border-top:1px solid #e2e8f0;margin:1rem 0">
+
+                <button class="btn-generate" onclick="startManualExam()">
+                    <i class="fas fa-play"></i> Bắt đầu làm bài
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         RESULT MODAL
+    ══════════════════════════════════════════ -->
+    <div class="modal-overlay" id="resultOverlay">
+        <div class="result-modal">
+            <div class="result-header">
+                <span class="result-trophy" id="resultTrophy">🏆</span>
+                <div class="result-score" id="resultScore" style="color:#667eea">0/0</div>
+                <div class="result-percent" id="resultPercent">0%</div>
+                <p class="result-message" id="resultMessage"></p>
+            </div>
+            <div class="result-body">
+                <div class="result-actions">
+                    <button class="btn-review" onclick="reviewAnswers()">
+                        <i class="fas fa-eye"></i> Xem đáp án
+                    </button>
+                    <button class="btn-retry" onclick="retryExam()">
+                        <i class="fas fa-redo"></i> Làm lại
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+    /* ══════════════════════════════════════════
+       AUTH GUARD
+    ══════════════════════════════════════════ */
+    (function() {
+        const stored = localStorage.getItem('hw_user') || sessionStorage.getItem('hw_user');
+        if (!stored) { window.location.replace('login.html'); return; }
+        try {
+            const u = JSON.parse(stored);
+            document.getElementById('navAuthArea').innerHTML = `
+                <div style="display:flex;align-items:center;gap:.75rem;">
+                    <span style="font-size:.9rem;font-weight:600;color:#4a5568;">
+                        <i class="fas fa-user-circle" style="color:#667eea;margin-right:.3rem"></i>${u.displayName || u.username}
+                    </span>
+                    <button onclick="logout()" style="background:linear-gradient(135deg,#f5576c,#f093fb);color:white;padding:.5rem 1.1rem;border-radius:50px;border:none;font-weight:600;font-size:.85rem;cursor:pointer;display:flex;align-items:center;gap:.4rem;white-space:nowrap;">
+                        <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                    </button>
+                </div>`;
+        } catch(e) { window.location.replace('login.html'); }
+    })();
+
+    function logout() {
+        localStorage.removeItem('hw_user');
+        sessionStorage.removeItem('hw_user');
+        window.location.href = 'login.html';
+    }
+
+    /* ══════════════════════════════════════════
+       EXAM DATA
+    ══════════════════════════════════════════ */
+    const EXAMS = [
+        {
+            id: 1, subject: 'toan',
+            title: 'Đại số cơ bản',
+            desc: 'Phương trình, bất phương trình và hàm số',
+            questions: 10, time: 15, level: 'Dễ',
+            qs: [
+                { q: 'Nghiệm của phương trình 2x + 6 = 0 là?', opts: ['x = 3','x = -3','x = 2','x = -2'], ans: 1 },
+                { q: 'Hàm số y = x² có đồ thị là?', opts: ['Đường thẳng','Parabol','Đường tròn','Hyperbol'], ans: 1 },
+                { q: 'Giá trị của 2³ là?', opts: ['6','9','8','16'], ans: 2 },
+                { q: 'Bất phương trình x + 3 > 0 có nghiệm là?', opts: ['x > -3','x < -3','x > 3','x < 3'], ans: 0 },
+                { q: 'Tổng các nghiệm của x² - 5x + 6 = 0 là?', opts: ['6','-5','5','-6'], ans: 2 }
+            ]
+        },
+        {
+            id: 2, subject: 'toan',
+            title: 'Hình học không gian',
+            desc: 'Khối đa diện, mặt cầu và các bài toán thực tế',
+            questions: 15, time: 20, level: 'Trung bình',
+            qs: [
+                { q: 'Thể tích hình cầu bán kính r là?', opts: ['4πr²','(4/3)πr³','πr²h','2πr²'], ans: 1 },
+                { q: 'Hình lập phương có bao nhiêu mặt?', opts: ['4','8','6','12'], ans: 2 },
+                { q: 'Diện tích hình tròn bán kính r là?', opts: ['2πr','πr²','4πr²','πd'], ans: 1 },
+                { q: 'Hình chóp tứ giác đều có bao nhiêu mặt bên?', opts: ['3','4','5','6'], ans: 1 },
+                { q: 'Thể tích hình lập phương cạnh a là?', opts: ['a²','3a²','a³','6a²'], ans: 2 }
+            ]
+        },
+        {
+            id: 3, subject: 'ly',
+            title: 'Cơ học Newton',
+            desc: 'Các định luật Newton và ứng dụng trong chuyển động',
+            questions: 12, time: 18, level: 'Trung bình',
+            qs: [
+                { q: 'Định luật I Newton phát biểu về?', opts: ['Lực và gia tốc','Quán tính','Phản lực','Hấp dẫn'], ans: 1 },
+                { q: 'Đơn vị của lực trong hệ SI là?', opts: ['kg','m/s²','N','J'], ans: 2 },
+                { q: 'Công thức tính gia tốc là?', opts: ['a = Fm','a = F/m','a = m/F','a = F + m'], ans: 1 },
+                { q: 'Định luật III Newton nói về?', opts: ['Quán tính','Gia tốc','Lực và phản lực','Hấp dẫn'], ans: 2 },
+                { q: 'Vật chuyển động thẳng đều có gia tốc bằng?', opts: ['1 m/s²','Không đổi','0','Âm'], ans: 2 }
+            ]
+        },
+        {
+            id: 4, subject: 'hoa',
+            title: 'Hóa vô cơ tổng hợp',
+            desc: 'Axit, bazơ, muối và phản ứng trao đổi ion',
+            questions: 20, time: 25, level: 'Khó',
+            qs: [
+                { q: 'Axit HCl có tên gọi là?', opts: ['Axit sunfuric','Axit clohidric','Axit nitric','Axit photphoric'], ans: 1 },
+                { q: 'Bazơ NaOH có tên gọi là?', opts: ['Canxi hidroxit','Kali hidroxit','Natri hidroxit','Magie hidroxit'], ans: 2 },
+                { q: 'Phản ứng trung hòa là phản ứng giữa?', opts: ['Axit và muối','Bazơ và muối','Axit và bazơ','Muối và muối'], ans: 2 },
+                { q: 'Công thức của muối ăn là?', opts: ['KCl','NaCl','CaCl₂','MgCl₂'], ans: 1 },
+                { q: 'pH của dung dịch trung tính là?', opts: ['0','7','14','1'], ans: 1 }
+            ]
+        },
+        {
+            id: 5, subject: 'tin',
+            title: 'Lập trình Python cơ bản',
+            desc: 'Biến, vòng lặp, hàm và cấu trúc dữ liệu',
+            questions: 15, time: 20, level: 'Dễ',
+            qs: [
+                { q: 'Hàm in ra màn hình trong Python là?', opts: ['echo()','console.log()','print()','write()'], ans: 2 },
+                { q: 'Kiểu dữ liệu nào lưu chuỗi ký tự?', opts: ['int','float','str','bool'], ans: 2 },
+                { q: 'Vòng lặp nào dùng khi biết số lần lặp?', opts: ['while','for','do-while','loop'], ans: 1 },
+                { q: 'Cú pháp định nghĩa hàm trong Python là?', opts: ['function f():','def f():','func f():','define f():'], ans: 1 },
+                { q: 'Kiểu dữ liệu danh sách trong Python là?', opts: ['array','list','tuple','dict'], ans: 1 }
+            ]
+        },
+        {
+            id: 6, subject: 'tieng-anh',
+            title: 'Grammar - Thì trong tiếng Anh',
+            desc: '12 thì, cách dùng và bài tập thực hành',
+            questions: 20, time: 25, level: 'Trung bình',
+            qs: [
+                { q: 'Thì hiện tại đơn dùng để?', opts: ['Hành động đang xảy ra','Thói quen / sự thật','Hành động đã xảy ra','Hành động tương lai'], ans: 1 },
+                { q: "Dạng đúng: 'She ___ to school every day'", opts: ['go','goes','going','gone'], ans: 1 },
+                { q: "Past simple của 'go' là?", opts: ['goed','going','went','gone'], ans: 2 },
+                { q: "Thì hiện tại tiếp diễn dùng 'to be' + ?", opts: ['V-ed','V-ing','V (bare)','V-s/es'], ans: 1 },
+                { q: "Câu nào đúng ở thì tương lai đơn?", opts: ['She will goes.','She will go.','She will going.','She wills go.'], ans: 1 }
+            ]
+        },
+        {
+            id: 7, subject: 'su',
+            title: 'Lịch sử Việt Nam thế kỷ XX',
+            desc: 'Các sự kiện lịch sử từ 1900-1975',
+            questions: 15, time: 20, level: 'Trung bình',
+            qs: [
+                { q: 'Cách mạng tháng Tám năm 1945 diễn ra vào ngày?', opts: ['2/9/1945','19/8/1945','30/4/1975','7/5/1954'], ans: 1 },
+                { q: 'Chiến thắng Điện Biên Phủ diễn ra năm nào?', opts: ['1945','1954','1968','1975'], ans: 1 },
+                { q: 'Ngày thống nhất đất nước Việt Nam là?', opts: ['30/4/1975','2/9/1945','19/8/1945','7/5/1954'], ans: 0 },
+                { q: 'Đảng Cộng sản Việt Nam được thành lập năm?', opts: ['1925','1930','1945','1954'], ans: 1 },
+                { q: 'Hiệp định Giơnevơ ký kết năm nào?', opts: ['1945','1950','1954','1960'], ans: 2 }
+            ]
+        },
+        {
+            id: 8, subject: 'cong-nghe',
+            title: 'Kỹ thuật điện cơ bản',
+            desc: 'Mạch điện, điện trở và công suất tiêu thụ',
+            questions: 10, time: 15, level: 'Dễ',
+            qs: [
+                { q: 'Đơn vị đo điện trở là?', opts: ['Ampe','Vôn','Ôm','Oát'], ans: 2 },
+                { q: 'Công thức định luật Ôm là?', opts: ['I = U × R','I = U / R','U = I / R','R = U × I'], ans: 1 },
+                { q: 'Công suất điện được tính bằng?', opts: ['P = U + I','P = U / I','P = U × I','P = I / U'], ans: 2 },
+                { q: 'Đơn vị đo cường độ dòng điện là?', opts: ['Vôn (V)','Ampe (A)','Ôm (Ω)','Oát (W)'], ans: 1 },
+                { q: 'Mạch điện nối tiếp có đặc điểm?', opts: ['Điện áp bằng nhau','Cường độ dòng điện bằng nhau','Điện trở bằng nhau','Công suất bằng nhau'], ans: 1 }
+            ]
+        }
+    ];
+
+    /* ══════════════════════════════════════════
+       QUESTION BANK (for auto-generate)
+    ══════════════════════════════════════════ */
+    const QUESTION_BANK = {};
+    EXAMS.forEach(e => {
+        if (!QUESTION_BANK[e.subject]) QUESTION_BANK[e.subject] = [];
+        QUESTION_BANK[e.subject].push(...e.qs);
+    });
+
+    /* ══════════════════════════════════════════
+       SUBJECT META
+    ══════════════════════════════════════════ */
+    const SUBJECT_META = {
+        'toan':      { label: 'Toán',       icon: 'fa-square-root-alt', color: '#e53e3e' },
+        'ly':        { label: 'Vật lý',     icon: 'fa-atom',            color: '#3182ce' },
+        'hoa':       { label: 'Hóa học',    icon: 'fa-flask',           color: '#38a169' },
+        'tin':       { label: 'Tin học',    icon: 'fa-laptop-code',     color: '#805ad5' },
+        'su':        { label: 'Lịch sử',    icon: 'fa-landmark',        color: '#d69e2e' },
+        'cong-nghe': { label: 'Công nghệ',  icon: 'fa-cogs',            color: '#dd6b20' },
+        'tieng-anh': { label: 'Tiếng Anh',  icon: 'fa-language',        color: '#00b5d8' }
+    };
+
+    /* ══════════════════════════════════════════
+       RENDER EXAM CARDS
+    ══════════════════════════════════════════ */
+    function renderExams(filter) {
+        const grid = document.getElementById('examsGrid');
+        const noRes = document.getElementById('noResults');
+        const list = filter === 'tat-ca' ? EXAMS : EXAMS.filter(e => e.subject === filter);
+
+        if (list.length === 0) {
+            grid.innerHTML = '';
+            noRes.style.display = 'block';
+            return;
+        }
+        noRes.style.display = 'none';
+
+        grid.innerHTML = list.map(exam => {
+            const meta = SUBJECT_META[exam.subject];
+            const levelClass = exam.level === 'Dễ' ? 'level-de' : exam.level === 'Khó' ? 'level-kho' : 'level-tb';
+            return `
+            <div class="exam-card" data-subject="${exam.subject}">
+                <div class="exam-card-top-border border-${exam.subject}"></div>
+                <div class="exam-card-body">
+                    <span class="exam-subject-badge badge-${exam.subject}">
+                        <i class="fas ${meta.icon}"></i> ${meta.label}
+                    </span>
+                    <h3>${exam.title}</h3>
+                    <p>${exam.desc}</p>
+                    <div class="exam-meta">
+                        <span class="exam-meta-item"><i class="fas fa-question-circle"></i> ${exam.questions} câu</span>
+                        <span class="exam-meta-item"><i class="fas fa-clock"></i> ${exam.time} phút</span>
+                        <span class="level-badge ${levelClass}">${exam.level}</span>
+                    </div>
+                </div>
+                <div class="exam-card-footer">
+                    <button class="btn-start" onclick="startExam(${exam.id})">
+                        <i class="fas fa-play"></i> Làm bài
+                    </button>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    /* ══════════════════════════════════════════
+       FILTER TABS
+    ══════════════════════════════════════════ */
+    function filterExams(btn, subject) {
+        document.querySelectorAll('.subject-tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        moveIndicator(btn);
+        renderExams(subject);
+    }
+
+    function moveIndicator(btn) {
+        const indicator = document.getElementById('tabIndicator');
+        indicator.style.left  = btn.offsetLeft + 'px';
+        indicator.style.width = btn.offsetWidth + 'px';
+    }
+
+    /* ══════════════════════════════════════════
+       QUIZ STATE
+    ══════════════════════════════════════════ */
+    let currentExam   = null;
+    let currentQIndex = 0;
+    let userAnswers   = [];
+    let timerInterval = null;
+    let timeLeft      = 0;
+    let reviewMode    = false;
+
+    /* ══════════════════════════════════════════
+       START EXAM
+    ══════════════════════════════════════════ */
+    function startExam(examId) {
+        const exam = EXAMS.find(e => e.id === examId);
+        if (!exam) return;
+        currentExam   = exam;
+        currentQIndex = 0;
+        userAnswers   = new Array(exam.qs.length).fill(null);
+        reviewMode    = false;
+        timeLeft      = exam.time * 60;
+
+        document.getElementById('quizTitle').textContent    = exam.title;
+        document.getElementById('quizOverlay').classList.add('open');
+        document.body.style.overflow = 'hidden';
+
+        renderQuestion();
+        startTimer();
+    }
+
+    /* ══════════════════════════════════════════
+       RENDER QUESTION
+    ══════════════════════════════════════════ */
+    function renderQuestion() {
+        const exam = currentExam;
+        const q    = exam.qs[currentQIndex];
+        const total = exam.qs.length;
+        const idx   = currentQIndex;
+
+        document.getElementById('quizSubtitle').textContent  = `Câu ${idx + 1} / ${total}`;
+        document.getElementById('progressLabel').textContent = `Câu ${idx + 1} / ${total}`;
+        document.getElementById('progressPct').textContent   = Math.round(((idx + 1) / total) * 100) + '%';
+        document.getElementById('progressFill').style.width  = ((idx + 1) / total * 100) + '%';
+        document.getElementById('questionNumber').textContent = `Câu ${idx + 1}`;
+        document.getElementById('questionText').textContent   = q.q;
+
+        const letters = ['A','B','C','D'];
+        const optsList = document.getElementById('optionsList');
+        optsList.innerHTML = q.opts.map((opt, i) => {
+            let cls = 'option-item';
+            if (reviewMode) {
+                if (i === q.ans)                cls += ' correct';
+                else if (i === userAnswers[idx]) cls += ' wrong';
+            } else {
+                if (userAnswers[idx] === i) cls += ' selected';
+            }
+            const disabled = reviewMode ? 'style="pointer-events:none"' : '';
+            return `
+            <label class="${cls}" onclick="${reviewMode ? '' : `selectOption(${i})`}" ${disabled}>
+                <input type="radio" name="opt" value="${i}" ${userAnswers[idx] === i ? 'checked' : ''}>
+                <span class="option-letter">${letters[i]}</span>
+                <span>${opt}</span>
+                ${reviewMode && i === q.ans ? '<i class="fas fa-check" style="margin-left:auto;color:#38a169"></i>' : ''}
+                ${reviewMode && i === userAnswers[idx] && i !== q.ans ? '<i class="fas fa-times" style="margin-left:auto;color:#e53e3e"></i>' : ''}
+            </label>`;
+        }).join('');
+
+        // Prev/Next buttons
+        document.getElementById('btnPrev').disabled = idx === 0;
+        document.getElementById('btnPrev').style.opacity = idx === 0 ? '.4' : '1';
+
+        const btnNext = document.getElementById('btnNext');
+        if (idx === total - 1) {
+            btnNext.innerHTML = reviewMode
+                ? '<i class="fas fa-times"></i> Đóng'
+                : 'Nộp bài <i class="fas fa-paper-plane"></i>';
+            btnNext.className = reviewMode ? 'btn-nav btn-nav-secondary' : 'btn-nav btn-nav-danger';
+            btnNext.onclick   = reviewMode ? closeQuizModal : confirmSubmit;
+        } else {
+            btnNext.innerHTML = 'Câu tiếp theo <i class="fas fa-chevron-right"></i>';
+            btnNext.className = 'btn-nav btn-nav-primary';
+            btnNext.onclick   = nextQuestion;
+        }
+    }
+
+    function selectOption(i) {
+        if (reviewMode) return;
+        userAnswers[currentQIndex] = i;
+        renderQuestion();
+    }
+
+    function prevQuestion() {
+        if (currentQIndex > 0) { currentQIndex--; renderQuestion(); }
+    }
+
+    function nextQuestion() {
+        if (currentQIndex < currentExam.qs.length - 1) { currentQIndex++; renderQuestion(); }
+    }
+
+    /* ══════════════════════════════════════════
+       TIMER
+    ══════════════════════════════════════════ */
+    function startTimer() {
+        clearInterval(timerInterval);
+        updateTimerDisplay();
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            updateTimerDisplay();
+            if (timeLeft <= 0) { clearInterval(timerInterval); submitExam(); }
+        }, 1000);
+    }
+
+    function updateTimerDisplay() {
+        const m = Math.floor(timeLeft / 60);
+        const s = timeLeft % 60;
+        document.getElementById('timerDisplay').textContent =
+            String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+        const timerEl = document.getElementById('quizTimer');
+        timerEl.classList.toggle('urgent', timeLeft <= 60);
+    }
+
+    /* ══════════════════════════════════════════
+       SUBMIT
+    ══════════════════════════════════════════ */
+    function confirmSubmit() {
+        const unanswered = userAnswers.filter(a => a === null).length;
+        const msg = unanswered > 0
+            ? `Bạn còn ${unanswered} câu chưa trả lời. Bạn có chắc muốn nộp bài không?`
+            : 'Bạn có chắc muốn nộp bài không?';
+        if (confirm(msg)) submitExam();
+    }
+
+    function submitExam() {
+        clearInterval(timerInterval);
+        const exam    = currentExam;
+        const correct = exam.qs.filter((q, i) => userAnswers[i] === q.ans).length;
+        const total   = exam.qs.length;
+        const pct     = Math.round((correct / total) * 100);
+
+        // Close quiz, open result
+        document.getElementById('quizOverlay').classList.remove('open');
+        document.getElementById('resultOverlay').classList.add('open');
+
+        document.getElementById('resultScore').textContent = `${correct}/${total}`;
+        document.getElementById('resultPercent').textContent = `${pct}%`;
+
+        let color, trophy, msg;
+        if (pct >= 70) {
+            color = '#38a169'; trophy = '🏆';
+            msg = pct === 100 ? 'Xuất sắc! Bạn trả lời đúng tất cả các câu!' : 'Tốt lắm! Bạn đã nắm vững kiến thức.';
+        } else if (pct >= 50) {
+            color = '#d69e2e'; trophy = '📝';
+            msg = 'Khá ổn! Hãy ôn lại những phần còn yếu nhé.';
+        } else {
+            color = '#e53e3e'; trophy = '💪';
+            msg = 'Cần cố gắng thêm! Hãy xem lại tài liệu và thử lại.';
+        }
+
+        document.getElementById('resultScore').style.color   = color;
+        document.getElementById('resultPercent').style.color = color;
+        document.getElementById('resultTrophy').textContent  = trophy;
+        document.getElementById('resultMessage').textContent = msg;
+    }
+
+    /* ══════════════════════════════════════════
+       REVIEW ANSWERS
+    ══════════════════════════════════════════ */
+    function reviewAnswers() {
+        reviewMode    = true;
+        currentQIndex = 0;
+        document.getElementById('resultOverlay').classList.remove('open');
+        document.getElementById('quizOverlay').classList.add('open');
+
+        // Hide submit button in review mode
+        document.querySelector('.quiz-nav .btn-nav-danger').style.display = 'none';
+        renderQuestion();
+    }
+
+    function retryExam() {
+        document.getElementById('resultOverlay').classList.remove('open');
+        startExam(currentExam.id);
+        // Restore submit button
+        document.querySelector('.quiz-nav .btn-nav-danger').style.display = '';
+    }
+
+    function closeQuizModal() {
+        clearInterval(timerInterval);
+        document.getElementById('quizOverlay').classList.remove('open');
+        document.body.style.overflow = '';
+        // Restore submit button visibility for next time
+        const dangerBtn = document.querySelector('.quiz-nav .btn-nav-danger');
+        if (dangerBtn) dangerBtn.style.display = '';
+    }
+
+    /* ══════════════════════════════════════════
+       CREATE MODAL
+    ══════════════════════════════════════════ */
+    function openCreateModal() {
+        document.getElementById('createOverlay').classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeCreateModal() {
+        document.getElementById('createOverlay').classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
+    /* ══════════════════════════════════════════
+       TẠO ĐỀ THỦ CÔNG
+    ══════════════════════════════════════════ */
+    let manualQuestions = []; // [{q, opts:[4], ans}]
+
+    function addQuestion() {
+        const idx = manualQuestions.length;
+        manualQuestions.push({ q: '', opts: ['', '', '', ''], ans: 0 });
+        renderQuestionForm(idx);
+        updateQCount();
+    }
+
+    function removeQuestion(idx) {
+        manualQuestions.splice(idx, 1);
+        rebuildQuestionForms();
+        updateQCount();
+    }
+
+    function updateQCount() {
+        document.getElementById('qCount').textContent = manualQuestions.length;
+        document.getElementById('emptyQMsg').style.display = manualQuestions.length === 0 ? 'block' : 'none';
+    }
+
+    function renderQuestionForm(idx) {
+        const list = document.getElementById('questionsList');
+        const letters = ['A','B','C','D'];
+        const div = document.createElement('div');
+        div.id = `qblock-${idx}`;
+        div.style.cssText = 'background:#f7fafc;border:1.5px solid #e2e8f0;border-radius:12px;padding:1rem;position:relative;';
+        div.innerHTML = `
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;">
+                <span style="font-size:.8rem;font-weight:700;color:#667eea;text-transform:uppercase;letter-spacing:.8px;">Câu ${idx + 1}</span>
+                <button onclick="removeQuestion(${idx})" style="background:#fff5f5;border:1px solid #fed7d7;color:#c53030;width:28px;height:28px;border-radius:50%;cursor:pointer;font-size:.8rem;display:flex;align-items:center;justify-content:center;" title="Xóa câu này">
+                    <i class="fas fa-trash"></i>
+                </button>
+            </div>
+            <input type="text" class="form-control" placeholder="Nhập câu hỏi..." id="q-text-${idx}"
+                style="margin-bottom:.75rem;font-weight:600;"
+                oninput="manualQuestions[${idx}].q = this.value">
+            <div style="display:flex;flex-direction:column;gap:.45rem;">
+                ${letters.map((l, i) => `
+                <div style="display:flex;align-items:center;gap:.5rem;">
+                    <label style="display:flex;align-items:center;gap:.4rem;cursor:pointer;flex-shrink:0;">
+                        <input type="radio" name="ans-${idx}" value="${i}"
+                            ${i === 0 ? 'checked' : ''}
+                            onchange="manualQuestions[${idx}].ans = ${i}"
+                            style="accent-color:#667eea;width:16px;height:16px;">
+                        <span style="width:24px;height:24px;border-radius:50%;background:${i === 0 ? '#667eea' : '#e2e8f0'};color:${i === 0 ? 'white' : '#4a5568'};display:flex;align-items:center;justify-content:center;font-size:.75rem;font-weight:700;" id="letter-${idx}-${i}">${l}</span>
+                    </label>
+                    <input type="text" class="form-control" placeholder="Đáp án ${l}..." id="q-opt-${idx}-${i}"
+                        style="flex:1;padding:.5rem .75rem;font-size:.85rem;"
+                        oninput="manualQuestions[${idx}].opts[${i}] = this.value">
+                </div>`).join('')}
+            </div>
+            <p style="font-size:.75rem;color:#a0aec0;margin-top:.6rem;"><i class="fas fa-info-circle" style="margin-right:.3rem"></i>Chọn radio để đánh dấu đáp án đúng</p>
+        `;
+        list.appendChild(div);
+
+        // Update letter colors on radio change
+        div.querySelectorAll(`input[name="ans-${idx}"]`).forEach((radio, i) => {
+            radio.addEventListener('change', () => {
+                letters.forEach((_, j) => {
+                    const span = document.getElementById(`letter-${idx}-${j}`);
+                    if (span) {
+                        span.style.background = j === i ? '#667eea' : '#e2e8f0';
+                        span.style.color      = j === i ? 'white'   : '#4a5568';
+                    }
+                });
+            });
+        });
+
+        document.getElementById('emptyQMsg').style.display = 'none';
+    }
+
+    function rebuildQuestionForms() {
+        const list = document.getElementById('questionsList');
+        list.innerHTML = '';
+        manualQuestions.forEach((_, i) => renderQuestionForm(i));
+        // Restore values
+        manualQuestions.forEach((mq, i) => {
+            const qInput = document.getElementById(`q-text-${i}`);
+            if (qInput) qInput.value = mq.q;
+            mq.opts.forEach((opt, j) => {
+                const oInput = document.getElementById(`q-opt-${i}-${j}`);
+                if (oInput) oInput.value = opt;
+            });
+            const radio = document.querySelector(`input[name="ans-${i}"][value="${mq.ans}"]`);
+            if (radio) radio.checked = true;
+        });
+    }
+
+    function startManualExam() {
+        const name    = document.getElementById('manualName').value.trim();
+        const subject = document.getElementById('manualSubject').value;
+        const time    = parseInt(document.getElementById('manualTime').value) || 15;
+        const level   = document.getElementById('manualLevel').value;
+
+        if (manualQuestions.length === 0) {
+            alert('Vui lòng thêm ít nhất 1 câu hỏi!');
+            return;
+        }
+
+        // Validate
+        for (let i = 0; i < manualQuestions.length; i++) {
+            const mq = manualQuestions[i];
+            if (!mq.q.trim()) { alert(`Câu ${i + 1}: Chưa nhập nội dung câu hỏi!`); return; }
+            const emptyOpts = mq.opts.filter(o => !o.trim());
+            if (emptyOpts.length > 0) { alert(`Câu ${i + 1}: Vui lòng điền đủ 4 đáp án!`); return; }
+        }
+
+        const meta = SUBJECT_META[subject];
+        const exam = {
+            id: 9999,
+            subject,
+            title: name || `Đề kiểm tra ${meta.label} thủ công`,
+            desc: `Đề thi tự tạo — ${meta.label}`,
+            questions: manualQuestions.length,
+            time,
+            level,
+            qs: manualQuestions.map(mq => ({ q: mq.q, opts: [...mq.opts], ans: mq.ans }))
+        };
+
+        const existing = EXAMS.findIndex(e => e.id === 9999);
+        if (existing >= 0) EXAMS.splice(existing, 1);
+        EXAMS.push(exam);
+
+        closeCreateModal();
+        startExam(9999);
+    }
+
+    function openCreateModal() {
+        // Reset form
+        manualQuestions = [];
+        document.getElementById('questionsList').innerHTML = '';
+        document.getElementById('manualName').value = '';
+        document.getElementById('manualTime').value = '15';
+        updateQCount();
+        document.getElementById('createOverlay').classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    /* ══════════════════════════════════════════
+       NAVBAR
+    ══════════════════════════════════════════ */
+    const hamburger = document.getElementById('hamburger');
+    const navMenu   = document.getElementById('navMenu');
+    hamburger.addEventListener('click', () => {
+        navMenu.classList.toggle('active');
+        hamburger.classList.toggle('active');
+    });
+    navMenu.querySelectorAll('.nav-link').forEach(link => {
+        link.addEventListener('click', () => navMenu.classList.remove('active'));
+    });
+    window.addEventListener('scroll', () => {
+        document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    /* ══════════════════════════════════════════
+       CLOSE MODALS ON OVERLAY CLICK
+    ══════════════════════════════════════════ */
+    document.getElementById('createOverlay').addEventListener('click', function(e) {
+        if (e.target === this) closeCreateModal();
+    });
+    document.getElementById('resultOverlay').addEventListener('click', function(e) {
+        if (e.target === this) {
+            this.classList.remove('open');
+            document.body.style.overflow = '';
+        }
+    });
+
+    /* ══════════════════════════════════════════
+       INIT
+    ══════════════════════════════════════════ */
+    renderExams('tat-ca');
+
+    // Set initial tab indicator position
+    window.addEventListener('load', () => {
+        const activeTab = document.querySelector('.subject-tab-btn.active');
+        if (activeTab) moveIndicator(activeTab);
+    });
+    </script>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tài liệu - HOUSE WORK</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="UI.css">
+    <link rel="stylesheet" href="tailieu.css">
+</head>
+<body>
+
+    <!-- ── Navigation ── -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <i class="fas fa-microchip"></i>
+                <span>HOUSE WORK</span>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li class="nav-item"><a href="trang chu.html" class="nav-link">Trang chủ</a></li>
+                <li class="nav-item active"><a href="Tài liệu.html" class="nav-link">Tài liệu</a></li>
+                <li class="nav-item"><a href="thu-vien.html" class="nav-link">Thư viện</a></li>
+                <li class="nav-item"><a href="test.html" class="nav-link">Bài test</a></li>
+                <li class="nav-item"><a href="tien-do.html" class="nav-link">Tiến độ</a></li>
+                <li class="nav-item"><a href="am-nhac.html" class="nav-link"><i class="fas fa-music" style="color:#f093fb;margin-right:.3rem"></i>Âm nhạc</a></li>
+            </ul>
+            <div id="navAuthArea"></div>
+            <div class="hamburger" id="hamburger">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ── Hero ── -->
+    <section class="docs-hero">
+        <div class="container">
+            <div class="docs-hero-content">
+                <h1 class="docs-hero-title">
+                    <i class="fas fa-book-open"></i> Kho tài liệu học tập
+                </h1>
+                <p class="docs-hero-desc">
+                    Tài liệu đầy đủ các môn học — Toán, Lý, Hóa, Tin, Sử, Công nghệ, Tiếng Anh
+                </p>
+                <div class="docs-search">
+                    <i class="fas fa-search" style="color:#a0aec0;margin-right:.6rem;flex-shrink:0"></i>
+                    <input type="text" id="searchInput" placeholder="Tìm kiếm tài liệu, đề thi...">
+                    <button class="search-btn" onclick="searchDocs()">Tìm kiếm</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Subject Tab Bar (giống navbar web, chỉ chuyển trong trang này) ── -->
+    <div class="subject-tab-bar">
+        <div class="container">
+            <div class="subject-tab-inner" id="subjectTabInner">
+                <!-- Sliding indicator -->
+                <div class="tab-indicator" id="tabIndicator"></div>
+
+                <button class="subject-tab-btn active" data-subject="tat-ca"
+                        onclick="switchSubject(this,'tat-ca')">
+                    <i class="fas fa-th tab-icon"></i> Tất cả
+                </button>
+                <button class="subject-tab-btn" data-subject="toan"
+                        onclick="switchSubject(this,'toan')">
+                    <i class="fas fa-square-root-alt tab-icon"></i> Toán
+                </button>
+                <button class="subject-tab-btn" data-subject="ly"
+                        onclick="switchSubject(this,'ly')">
+                    <i class="fas fa-atom tab-icon"></i> Vật lý
+                </button>
+                <button class="subject-tab-btn" data-subject="hoa"
+                        onclick="switchSubject(this,'hoa')">
+                    <i class="fas fa-flask tab-icon"></i> Hóa học
+                </button>
+                <button class="subject-tab-btn" data-subject="tin"
+                        onclick="switchSubject(this,'tin')">
+                    <i class="fas fa-laptop-code tab-icon"></i> Tin học
+                </button>
+                <button class="subject-tab-btn" data-subject="su"
+                        onclick="switchSubject(this,'su')">
+                    <i class="fas fa-landmark tab-icon"></i> Lịch sử
+                </button>
+                <button class="subject-tab-btn" data-subject="cong-nghe"
+                        onclick="switchSubject(this,'cong-nghe')">
+                    <i class="fas fa-cogs tab-icon"></i> Công nghệ
+                </button>
+                <button class="subject-tab-btn" data-subject="tieng-anh"
+                        onclick="switchSubject(this,'tieng-anh')">
+                    <i class="fas fa-language tab-icon"></i> Tiếng Anh
+                </button>
+                <button class="subject-tab-btn" data-subject="tong-de"
+                        onclick="switchSubject(this,'tong-de')">
+                    <i class="fas fa-file-alt tab-icon"></i> Tổng đề
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Main layout: Sidebar + Content ── -->
+    <div class="docs-layout">
+
+        <!-- Sidebar: chapter navigation (chỉ trong trang tài liệu) -->
+        <aside class="docs-sidebar">
+            <nav class="sidebar-nav" id="sidebar"></nav>
+        </aside>
+
+        <!-- Content area -->
+        <main class="docs-content">
+            <div class="content-header">
+                <div>
+                    <h2 id="contentTitle">Tất cả tài liệu</h2>
+                    <p id="contentDesc">Tổng hợp tài liệu tất cả các môn học</p>
+                </div>
+                <select class="sort-select" id="sortSelect">
+                    <option value="newest">Mới nhất</option>
+                    <option value="popular">Phổ biến nhất</option>
+                    <option value="az">A → Z</option>
+                </select>
+            </div>
+
+            <div class="docs-grid" id="docsGrid"></div>
+
+            <div class="no-results" id="noResults">
+                <i class="fas fa-search"></i>
+                <p>Không tìm thấy tài liệu phù hợp.</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- ── Modal xem file trực tiếp ── -->
+    <div id="fileModal" style="
+        display:none; position:fixed; inset:0; z-index:3000;
+        background:rgba(0,0,0,0.75); backdrop-filter:blur(4px);
+        align-items:center; justify-content:center; padding:1rem;">
+        <div style="
+            background:white; border-radius:16px; width:100%; max-width:960px;
+            height:90vh; display:flex; flex-direction:column; overflow:hidden;
+            box-shadow:0 30px 80px rgba(0,0,0,0.4);">
+
+            <!-- Header modal -->
+            <div style="
+                display:flex; align-items:center; justify-content:space-between;
+                padding:1rem 1.5rem; border-bottom:1px solid #e2e8f0; flex-shrink:0;">
+                <div style="display:flex;align-items:center;gap:.6rem;">
+                    <i class="fas fa-file-pdf" style="color:#e53e3e;font-size:1.2rem"></i>
+                    <span id="modalFileName" style="font-weight:700;color:#1a202c;font-size:1rem"></span>
+                </div>
+                <div style="display:flex;gap:.5rem;align-items:center;">
+                    <button id="modalDownloadBtn" onclick="downloadCurrentFile()" style="
+                        background:linear-gradient(135deg,#667eea,#764ba2);color:white;
+                        border:none;padding:.5rem 1rem;border-radius:8px;font-weight:600;
+                        font-size:.85rem;cursor:pointer;display:flex;align-items:center;gap:.4rem;">
+                        <i class="fas fa-download"></i> Tải xuống
+                    </button>
+                    <button onclick="closeFileModal()" style="
+                        background:#f7fafc;border:1.5px solid #e2e8f0;color:#4a5568;
+                        width:36px;height:36px;border-radius:8px;cursor:pointer;
+                        font-size:1rem;display:flex;align-items:center;justify-content:center;">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Iframe xem file -->
+            <iframe id="fileViewer" src="" style="
+                flex:1; border:none; width:100%; background:#525659;">
+            </iframe>
+        </div>
+    </div>
+
+    <script src="tailieu.js"></script>
+</body>
+</html>
