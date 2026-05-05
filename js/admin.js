@@ -234,7 +234,15 @@ async function saveUser() {
             users[idx].password = await _hashPassword(password);
         }
         saveUsers(users);
-        showToast('Đã cập nhật người dùng', 'success');
+
+        // Đồng bộ lên Supabase
+        if (typeof isSupabaseConfigured === 'function' && isSupabaseConfigured()) {
+            sbUpsertStudentUser(users[idx]).then(ok => {
+                showToast(ok ? 'Đã cập nhật & đồng bộ Supabase ✓' : 'Đã cập nhật (chưa đồng bộ Supabase)', ok ? 'success' : 'warning');
+            });
+        } else {
+            showToast('Đã cập nhật người dùng', 'success');
+        }
     } else {
         // Add
         const exists = users.find(u => u.username === username);
@@ -279,15 +287,37 @@ async function sbUpsertStudentUser(user) {
     try {
         const sb = getSupabase();
         if (!sb) return false;
-        const { error } = await sb.from('users').upsert({
-            username:     user.username,
-            display_name: user.displayName,
-            role:         user.role === 'admin' ? 'admin' : 'student',
-            login_method: 'password',
+        const { data, error } = await sb.from('users').upsert({
+            username:      user.username,
+            display_name:  user.displayName,
+            password_hash: user.password,   // SHA-256 hash
+            role:          user.role === 'admin' ? 'admin' : 'student',
+            login_method:  'password',
+            is_active:     true,
             last_login_at: new Date().toISOString()
-        }, { onConflict: 'username' });
-        return !error;
-    } catch { return false; }
+        }, { onConflict: 'username' })
+        .select('id')
+        .single();
+
+        if (error) {
+            console.error('[Supabase] sbUpsertStudentUser error:', error.message);
+            return false;
+        }
+
+        // Cập nhật lại id từ Supabase vào localStorage
+        if (data?.id) {
+            const users = getUsers();
+            const idx = users.findIndex(u => u.username === user.username);
+            if (idx !== -1) {
+                users[idx].dbId = data.id;
+                saveUsers(users);
+            }
+        }
+        return true;
+    } catch(e) {
+        console.error('[Supabase] sbUpsertStudentUser exception:', e);
+        return false;
+    }
 }
 
 function confirmDeleteUser(id) {
