@@ -123,7 +123,8 @@ async function handleLogin(e) {
         return;
     }
 
-    // ── Student login — kiểm tra tài khoản do admin tạo ──
+    // ── Student login — kiểm tra tài khoản ──────────────────
+    // Ưu tiên: Supabase → localStorage fallback
     const users = JSON.parse(localStorage.getItem('hw_users') || '[]');
     console.log('[Login] hw_users count:', users.length);
     console.log('[Login] Tìm username:', username);
@@ -135,7 +136,6 @@ async function handleLogin(e) {
     });
 
     if (user) {
-        // Kiểm tra tài khoản có bị vô hiệu hóa không
         if (user.isActive === false) {
             _loginError(btn, 'Tài khoản đã bị vô hiệu hóa. Liên hệ admin.');
             return;
@@ -145,17 +145,83 @@ async function handleLogin(e) {
             displayName: user.displayName || user.username,
             role:        user.role === 'admin' ? 'admin' : 'student',
             loginMethod: 'password',
-            dbId:        user.id || null
+            dbId:        user.dbId || null
         });
         if (remember) localStorage.setItem('hw_user', userData);
         else sessionStorage.setItem('hw_user', userData);
+
+        if (user.dbId && typeof isSupabaseConfigured === 'function' && isSupabaseConfigured()) {
+            try {
+                const sb = getSupabase();
+                if (sb) sb.from('users').update({ last_login_at: new Date().toISOString() }).eq('id', user.dbId);
+            } catch(e) { /* ignore */ }
+        }
+
         btn.innerHTML = '<i class="fas fa-check"></i> Thành công!';
         btn.style.background = 'linear-gradient(135deg, #43e97b, #38f9d7)';
         const dest = user.role === 'admin' ? 'pages/admin.html' : 'index.html';
         showPageLoader('Đang tải trang...', _getRedirectParam() || dest);
-    } else {
-        _loginError(btn, 'Tên đăng nhập hoặc mật khẩu không đúng.');
+        return;
     }
+
+    // Không tìm thấy trong localStorage → thử Supabase
+    if (typeof isSupabaseConfigured === 'function' && isSupabaseConfigured()) {
+        try {
+            const sb = getSupabase();
+            if (sb) {
+                const { data: sbUser, error } = await sb
+                    .from('users')
+                    .select('id, username, display_name, role, password_hash, is_active')
+                    .eq('username', username)
+                    .eq('password_hash', inputHash)
+                    .single();
+
+                if (!error && sbUser) {
+                    if (sbUser.is_active === false) {
+                        _loginError(btn, 'Tài khoản đã bị vô hiệu hóa. Liên hệ admin.');
+                        return;
+                    }
+
+                    // Lưu vào localStorage để lần sau không cần query Supabase
+                    const localUsers = JSON.parse(localStorage.getItem('hw_users') || '[]');
+                    if (!localUsers.find(u => u.username === sbUser.username)) {
+                        localUsers.push({
+                            id:          sbUser.id,
+                            dbId:        sbUser.id,
+                            username:    sbUser.username,
+                            displayName: sbUser.display_name,
+                            password:    inputHash,
+                            role:        sbUser.role,
+                            isActive:    sbUser.is_active,
+                            createdAt:   Date.now(),
+                        });
+                        localStorage.setItem('hw_users', JSON.stringify(localUsers));
+                    }
+
+                    const userData = JSON.stringify({
+                        username:    sbUser.username,
+                        displayName: sbUser.display_name || sbUser.username,
+                        role:        sbUser.role,
+                        loginMethod: 'password',
+                        dbId:        sbUser.id
+                    });
+                    if (remember) localStorage.setItem('hw_user', userData);
+                    else sessionStorage.setItem('hw_user', userData);
+
+                    // Cập nhật last_login_at
+                    sb.from('users').update({ last_login_at: new Date().toISOString() }).eq('id', sbUser.id);
+
+                    btn.innerHTML = '<i class="fas fa-check"></i> Thành công!';
+                    btn.style.background = 'linear-gradient(135deg, #43e97b, #38f9d7)';
+                    const dest = sbUser.role === 'admin' ? 'pages/admin.html' : 'index.html';
+                    showPageLoader('Đang tải trang...', _getRedirectParam() || dest);
+                    return;
+                }
+            }
+        } catch(e) { console.warn('[Login] Supabase query error:', e); }
+    }
+
+    _loginError(btn, 'Tên đăng nhập hoặc mật khẩu không đúng.');
 }
 
 function _loginError(btn, msg) {
@@ -245,6 +311,8 @@ function _loginWithGoogleUser(googleUser) {
                 updated.dbId = dbUser.id;
                 updated.role = dbUser.role;
                 localStorage.setItem('hw_user', JSON.stringify(updated));
+                // Khởi tạo user_progress nếu chưa có
+                _ensureUserProgress(dbUser.id);
             } else {
                 console.warn('[Supabase] Upsert trả về null — kiểm tra RLS hoặc schema');
             }
@@ -257,6 +325,17 @@ function _loginWithGoogleUser(googleUser) {
 
     const redirect = _getRedirectParam();
     showPageLoader('Đăng nhập thành công!', redirect || 'index.html');
+}
+
+// Đảm bảo user_progress tồn tại
+async function _ensureUserProgress(userId) {
+    if (!userId || typeof getSupabase !== 'function') return;
+    try {
+        const sb = getSupabase();
+        if (!sb) return;
+        await sb.from('user_progress')
+            .upsert({ user_id: userId }, { onConflict: 'user_id' });
+    } catch(e) { /* ignore */ }
 }
 
 function _decodeJWT(token) {

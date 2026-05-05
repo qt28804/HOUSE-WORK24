@@ -1,0 +1,12 @@
+{
+  "name": "housework-supabase-scripts",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "create-user": "node create-user.js",
+    "list-users":  "node -e \"import('./create-user.js').then(m => m.listUsers?.())\""
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0"
+  }
+}

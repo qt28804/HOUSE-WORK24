@@ -223,52 +223,51 @@ async function saveUser() {
     const users = getUsers();
 
     if (_editingUserId) {
-        // Edit
+        // ── Sửa tài khoản ──
         const idx = users.findIndex(u => u.id === _editingUserId);
         if (idx === -1) return;
+
         users[idx].displayName = displayName;
         users[idx].username    = username;
         users[idx].role        = role;
-        // Hash mật khẩu mới nếu có nhập
+        users[idx].updatedAt   = Date.now();
+
         if (password) {
             users[idx].password = await _hashPassword(password);
         }
-        saveUsers(users);
 
-        // Đồng bộ lên Supabase
-        if (typeof isSupabaseConfigured === 'function' && isSupabaseConfigured()) {
-            sbUpsertStudentUser(users[idx]).then(ok => {
-                showToast(ok ? 'Đã cập nhật & đồng bộ Supabase ✓' : 'Đã cập nhật (chưa đồng bộ Supabase)', ok ? 'success' : 'warning');
-            });
-        } else {
-            showToast('Đã cập nhật người dùng', 'success');
-        }
+        saveUsers(users);
+        _syncUserToSupabase(users[idx], false);
+        showToast('Đã cập nhật tài khoản', 'success');
+
     } else {
-        // Add
-        const exists = users.find(u => u.username === username);
-        if (exists) { showToast('Tên đăng nhập đã tồn tại', 'error'); return; }
-        if (!password) { showToast('Vui lòng nhập mật khẩu', 'warning'); return; }
+        // ── Tạo tài khoản mới ──
+        if (users.find(u => u.username === username)) {
+            showToast('Tên đăng nhập đã tồn tại', 'error');
+            return;
+        }
+        if (!password) {
+            showToast('Vui lòng nhập mật khẩu', 'warning');
+            return;
+        }
 
         const hashedPw = await _hashPassword(password);
         const newUser = {
-            id: username + '_' + Date.now(),
-            username, displayName,
-            password: hashedPw,
-            role,
-            createdAt: Date.now(),
+            id:          'u_' + Date.now(),
+            username,
+            displayName,
+            password:    hashedPw,   // SHA-256 — không thể reverse
+            role:        role || 'user',
+            isActive:    true,
+            createdAt:   Date.now(),
+            updatedAt:   Date.now(),
         };
+
         users.push(newUser);
         saveUsers(users);
 
-        // Đồng bộ lên Supabase nếu đã cấu hình
-        if (typeof isSupabaseConfigured === 'function' && isSupabaseConfigured()) {
-            sbUpsertStudentUser(newUser).then(ok => {
-                if (ok) showToast('Đã thêm & đồng bộ lên Supabase ✓', 'success');
-                else    showToast('Đã thêm (chưa đồng bộ Supabase)', 'warning');
-            });
-        } else {
-            showToast('Đã thêm người dùng', 'success');
-        }
+        // Đồng bộ Supabase
+        _syncUserToSupabase(newUser, true);
     }
 
     closeUserModal();
@@ -276,35 +275,39 @@ async function saveUser() {
     refreshDashboard();
 }
 
-// Hash mật khẩu SHA-256
-async function _hashPassword(pw) {
-    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pw));
-    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
-}
+// ── Đồng bộ user lên Supabase ─────────────────────────────────
+async function _syncUserToSupabase(user, isNew) {
+    if (typeof isSupabaseConfigured !== 'function' || !isSupabaseConfigured()) {
+        showToast(isNew ? 'Đã tạo tài khoản ✓' : 'Đã cập nhật ✓', 'success');
+        return;
+    }
 
-// Upsert học sinh lên Supabase
-async function sbUpsertStudentUser(user) {
     try {
         const sb = getSupabase();
-        if (!sb) return false;
-        const { data, error } = await sb.from('users').upsert({
+        if (!sb) { showToast(isNew ? 'Đã tạo (offline)' : 'Đã cập nhật (offline)', 'warning'); return; }
+
+        const payload = {
             username:      user.username,
             display_name:  user.displayName,
-            password_hash: user.password,   // SHA-256 hash
+            password_hash: user.password,
             role:          user.role === 'admin' ? 'admin' : 'student',
             login_method:  'password',
-            is_active:     true,
-            last_login_at: new Date().toISOString()
-        }, { onConflict: 'username' })
-        .select('id')
-        .single();
+            is_active:     user.isActive !== false,
+        };
+
+        const { data, error } = await sb
+            .from('users')
+            .upsert(payload, { onConflict: 'username' })
+            .select('id')
+            .single();
 
         if (error) {
-            console.error('[Supabase] sbUpsertStudentUser error:', error.message);
-            return false;
+            console.error('[Supabase] _syncUserToSupabase:', error.message);
+            showToast(isNew ? 'Đã tạo (lỗi Supabase)' : 'Đã cập nhật (lỗi Supabase)', 'warning');
+            return;
         }
 
-        // Cập nhật lại id từ Supabase vào localStorage
+        // Lưu dbId vào localStorage
         if (data?.id) {
             const users = getUsers();
             const idx = users.findIndex(u => u.username === user.username);
@@ -312,12 +315,26 @@ async function sbUpsertStudentUser(user) {
                 users[idx].dbId = data.id;
                 saveUsers(users);
             }
+
+            // Tạo user_progress nếu là tài khoản mới
+            if (isNew) {
+                await sb.from('user_progress')
+                    .upsert({ user_id: data.id }, { onConflict: 'user_id' });
+            }
         }
-        return true;
+
+        showToast(isNew ? 'Đã tạo & lưu Supabase ✓' : 'Đã cập nhật & lưu Supabase ✓', 'success');
+
     } catch(e) {
-        console.error('[Supabase] sbUpsertStudentUser exception:', e);
-        return false;
+        console.error('[Supabase] _syncUserToSupabase exception:', e);
+        showToast(isNew ? 'Đã tạo (lỗi kết nối)' : 'Đã cập nhật (lỗi kết nối)', 'warning');
     }
+}
+
+// Hash mật khẩu SHA-256
+async function _hashPassword(pw) {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(pw));
+    return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,'0')).join('');
 }
 
 function confirmDeleteUser(id) {

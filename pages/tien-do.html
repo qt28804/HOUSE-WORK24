@@ -61,7 +61,7 @@
                 <div class="stat-card purple">
                     <div class="stat-icon purple"><i class="fas fa-book-open"></i></div>
                     <div class="stat-info">
-                        <div class="stat-number">24</div>
+                        <div class="stat-number" id="statDocsRead">24</div>
                         <div class="stat-label">Tài liệu đã học</div>
                         <span class="stat-trend up"><i class="fas fa-arrow-up"></i> +3 tuần này</span>
                     </div>
@@ -69,7 +69,7 @@
                 <div class="stat-card green">
                     <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
                     <div class="stat-info">
-                        <div class="stat-number">18</div>
+                        <div class="stat-number" id="statTestsDone">18</div>
                         <div class="stat-label">Bài kiểm tra hoàn thành</div>
                         <span class="stat-trend up"><i class="fas fa-arrow-up"></i> +2 tuần này</span>
                     </div>
@@ -77,7 +77,7 @@
                 <div class="stat-card orange">
                     <div class="stat-icon orange"><i class="fas fa-clock"></i></div>
                     <div class="stat-info">
-                        <div class="stat-number">45h</div>
+                        <div class="stat-number" id="statHours">45h</div>
                         <div class="stat-label">Thời gian học</div>
                         <span class="stat-trend up"><i class="fas fa-arrow-up"></i> +5h tuần này</span>
                     </div>
@@ -85,7 +85,7 @@
                 <div class="stat-card blue">
                     <div class="stat-icon blue"><i class="fas fa-trophy"></i></div>
                     <div class="stat-info">
-                        <div class="stat-number">85%</div>
+                        <div class="stat-number" id="statAvgScore">85%</div>
                         <div class="stat-label">Điểm trung bình</div>
                         <span class="stat-trend up"><i class="fas fa-arrow-up"></i> +2% tháng này</span>
                     </div>
@@ -269,7 +269,7 @@
             </div>
 
             <!-- Recent tests -->
-            <div class="progress-section">
+            <div class="progress-section" id="recentTestsSection">
                 <div class="section-header-row">
                     <div class="section-title-wrap">
                         <div class="section-title-icon purple"><i class="fas fa-history"></i></div>
@@ -280,7 +280,7 @@
                     </div>
                     <span class="section-badge">Gần đây</span>
                 </div>
-                <div class="test-list">
+                <div class="test-list" id="testHistoryList">
                     <div class="test-item">
                         <div class="test-score-badge high">A</div>
                         <div class="test-info">
@@ -334,6 +334,8 @@
     </div>
 
     <script src="../js/auth.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase.js"></script>
     <script src="../js/tien-do.js"></script>
     <script>
     // Activity heatmap
