@@ -125,7 +125,14 @@ async function handleLogin(e) {
 
     // ── Student login — kiểm tra tài khoản do admin tạo ──
     const users = JSON.parse(localStorage.getItem('hw_users') || '[]');
-    const user  = users.find(u => u.username === username && u.password === inputHash);
+    console.log('[Login] hw_users count:', users.length);
+    console.log('[Login] Tìm username:', username);
+    console.log('[Login] inputHash:', inputHash);
+
+    const user = users.find(u => {
+        console.log('[Login] So sánh:', u.username, '===', username, '|', u.password, '===', inputHash);
+        return u.username === username && u.password === inputHash;
+    });
 
     if (user) {
         // Kiểm tra tài khoản có bị vô hiệu hóa không
