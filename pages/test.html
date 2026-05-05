@@ -1,0 +1,228 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiểm tra - HOUSE WORK</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/ui.css">
+    <link rel="stylesheet" href="../css/test.css">
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../js/supabase.js"></script>
+</head>
+<body>
+
+    <div class="nav-wrapper">
+        <nav class="navbar" id="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <div class="nav-logo-icon"><i class="fas fa-microchip"></i></div>
+                    <span>HOUSE WORK</span>
+                </div>
+                <ul class="nav-menu" id="navMenu">
+                    <li class="nav-item"><a href="../index.html" class="nav-link">Trang chủ</a></li>
+                    <li class="nav-item"><a href="tai-lieu.html" class="nav-link">Tài liệu</a></li>
+                    <li class="nav-item"><a href="thu-vien.html" class="nav-link">Thư viện</a></li>
+                    <li class="nav-item active"><a href="test.html" class="nav-link">Kiểm tra</a></li>
+                    <li class="nav-item"><a href="tien-do.html" class="nav-link">Tiến độ</a></li>
+                    <li class="nav-item"><a href="am-nhac.html" class="nav-link"><i class="fas fa-music" style="color:#f093fb;margin-right:.3rem"></i>Âm nhạc</a></li>
+                </ul>
+                <div class="hamburger" id="hamburger">
+                    <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+        <div id="navAuthArea"></div>
+    </div>
+
+    <div class="page-content">
+
+    <!-- Hero -->
+    <section class="test-hero">
+        <div class="container">
+            <div class="test-hero-content">
+                <div class="test-hero-eyebrow"><i class="fas fa-clipboard-check"></i> Kiểm tra kiến thức</div>
+                <h1 class="test-hero-title">Bài <span>Kiểm Tra</span></h1>
+                <p class="test-hero-desc">Chọn đề hoặc tự tạo bài kiểm tra của bạn</p>
+                <div class="test-hero-stats">
+                    <div class="test-hero-stat"><strong>8</strong><span>Đề thi</span></div>
+                    <div class="test-hero-stat"><strong>7</strong><span>Môn học</span></div>
+                    <div class="test-hero-stat"><strong>100+</strong><span>Câu hỏi</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main -->
+    <section class="main-content">
+        <div class="container">
+
+            <div class="action-bar">
+                <div class="action-bar-left">
+                    <h2>Chọn đề thi</h2>
+                    <p>Làm bài trực tiếp trên web</p>
+                </div>
+                <button class="btn-create" onclick="openCreateModal()">
+                    <i class="fas fa-magic"></i> Tự tạo bài kiểm tra
+                </button>
+            </div>
+
+            <div class="subject-tab-bar">
+                <div class="subject-tab-inner" id="subjectTabInner">
+                    <div class="tab-indicator" id="tabIndicator"></div>
+                    <button class="subject-tab-btn active" data-subject="tat-ca" onclick="filterExams(this,'tat-ca')"><i class="fas fa-th tab-icon"></i> Tất cả</button>
+                    <button class="subject-tab-btn" data-subject="toan" onclick="filterExams(this,'toan')"><i class="fas fa-square-root-alt tab-icon"></i> Toán</button>
+                    <button class="subject-tab-btn" data-subject="ly" onclick="filterExams(this,'ly')"><i class="fas fa-atom tab-icon"></i> Vật lý</button>
+                    <button class="subject-tab-btn" data-subject="hoa" onclick="filterExams(this,'hoa')"><i class="fas fa-flask tab-icon"></i> Hóa học</button>
+                    <button class="subject-tab-btn" data-subject="tin" onclick="filterExams(this,'tin')"><i class="fas fa-laptop-code tab-icon"></i> Tin học</button>
+                    <button class="subject-tab-btn" data-subject="su" onclick="filterExams(this,'su')"><i class="fas fa-landmark tab-icon"></i> Lịch sử</button>
+                    <button class="subject-tab-btn" data-subject="cong-nghe" onclick="filterExams(this,'cong-nghe')"><i class="fas fa-cogs tab-icon"></i> Công nghệ</button>
+                    <button class="subject-tab-btn" data-subject="tieng-anh" onclick="filterExams(this,'tieng-anh')"><i class="fas fa-language tab-icon"></i> Tiếng Anh</button>
+                </div>
+            </div>
+
+            <div class="exams-grid-wrap">
+                <div class="exams-grid" id="examsGrid"></div>
+                <div class="no-results" id="noResults">
+                    <i class="fas fa-search"></i>
+                    <p>Không có đề thi nào cho môn này.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Quiz Modal -->
+    <div class="modal-overlay" id="quizOverlay">
+        <div class="quiz-modal" id="quizModal">
+            <div class="quiz-header">
+                <div class="quiz-header-left">
+                    <h3 id="quizTitle">De thi</h3>
+                    <p id="quizSubtitle">Câu 1 / 5</p>
+                </div>
+                <div class="quiz-timer" id="quizTimer">
+                    <i class="fas fa-clock"></i>
+                    <span id="timerDisplay">15:00</span>
+                </div>
+            </div>
+            <div class="quiz-progress-bar-wrap">
+                <div class="quiz-progress-label">
+                    <span id="progressLabel">Câu 1 / 5</span>
+                    <span id="progressPct">0%</span>
+                </div>
+                <div class="quiz-progress-bar">
+                    <div class="quiz-progress-fill" id="progressFill" style="width:0%"></div>
+                </div>
+            </div>
+            <div class="quiz-dots-wrap" id="quizDots"></div>
+            <div class="quiz-body" id="quizBody">
+                <div class="question-card">
+                    <div class="question-number" id="questionNumber">Câu 1</div>
+                    <div class="question-text" id="questionText"></div>
+                </div>
+                <div class="options-list" id="optionsList"></div>
+            </div>
+            <div class="quiz-nav">
+                <button class="btn-nav btn-nav-secondary" id="btnPrev" onclick="prevQuestion()">
+                    <i class="fas fa-chevron-left"></i> Câu trước
+                </button>
+                <button class="btn-nav btn-nav-danger" onclick="confirmSubmit()" style="font-size:.82rem;">
+                    <i class="fas fa-paper-plane"></i> Nộp bài
+                </button>
+                <button class="btn-nav btn-nav-primary" id="btnNext" onclick="nextQuestion()">
+                    Câu tiếp theo <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Modal -->
+    <div class="modal-overlay" id="createOverlay" style="align-items:flex-start;padding-top:1rem;">
+        <div class="create-modal" style="max-width:680px;max-height:95vh;">
+            <div class="create-modal-header">
+                <div>
+                    <h3><i class="fas fa-pen-nib" style="margin-right:.4rem"></i>Tạo đề kiểm tra thủ công</h3>
+                    <p>Nhập câu hỏi và đáp án của bạn</p>
+                </div>
+                <button class="btn-close-modal" onclick="closeCreateModal()"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="create-modal-body">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:1rem;">
+                    <div class="form-group" style="margin-bottom:0">
+                        <label><i class="fas fa-tag" style="margin-right:.35rem;color:#667eea"></i>Tên đề thi</label>
+                        <input type="text" class="form-control" id="manualName" placeholder="Ví dụ: Kiểm tra 15 phút...">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0">
+                        <label><i class="fas fa-book" style="margin-right:.35rem;color:#667eea"></i>Môn học</label>
+                        <select class="form-control" id="manualSubject">
+                            <option value="toan">Toán</option>
+                            <option value="ly">Vật lý</option>
+                            <option value="hoa">Hóa học</option>
+                            <option value="tin">Tin học</option>
+                            <option value="su">Lịch sử</option>
+                            <option value="cong-nghe">Công nghệ</option>
+                            <option value="tieng-anh">Tiếng Anh</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0">
+                        <label><i class="fas fa-clock" style="margin-right:.35rem;color:#667eea"></i>Thời gian (phút)</label>
+                        <input type="number" class="form-control" id="manualTime" value="15" min="1" max="120">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0">
+                        <label><i class="fas fa-signal" style="margin-right:.35rem;color:#667eea"></i>Độ khó</label>
+                        <select class="form-control" id="manualLevel">
+                            <option value="Dễ">Dễ</option>
+                            <option value="Trung bình" selected>Trung bình</option>
+                            <option value="Khó">Khó</option>
+                        </select>
+                    </div>
+                </div>
+                <hr style="border:none;border-top:1px solid #e2e8f0;margin:1rem 0">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;">
+                    <span style="font-size:.85rem;font-weight:700;color:#4a5568;">
+                        <i class="fas fa-list-ol" style="color:#667eea;margin-right:.35rem"></i>
+                        Câu hỏi (<span id="qCount">0</span>)
+                    </span>
+                    <button onclick="addQuestion()" style="background:linear-gradient(135deg,#43e97b,#38f9d7);color:white;border:none;padding:.45rem 1rem;border-radius:50px;font-family:'Inter',sans-serif;font-size:.82rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:.35rem;">
+                        <i class="fas fa-plus"></i> Thêm câu hỏi
+                    </button>
+                </div>
+                <div id="questionsList" style="display:flex;flex-direction:column;gap:1rem;max-height:380px;overflow-y:auto;padding-right:4px;"></div>
+                <div id="emptyQMsg" style="text-align:center;padding:2rem;color:#a0aec0;font-size:.9rem;">
+                    <i class="fas fa-plus-circle" style="font-size:2rem;display:block;margin-bottom:.5rem;opacity:.4"></i>
+                    Nhấn "Thêm câu hỏi" để bắt đầu
+                </div>
+                <hr style="border:none;border-top:1px solid #e2e8f0;margin:1rem 0">
+                <button class="btn-generate" onclick="startManualExam()">
+                    <i class="fas fa-play"></i> Bắt đầu làm bài
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Result Modal -->
+    <div class="modal-overlay" id="resultOverlay">
+        <div class="result-modal">
+            <div class="result-header">
+                <span class="result-trophy" id="resultTrophy">🏆</span>
+                <div class="result-score" id="resultScore" style="color:#667eea">0/0</div>
+                <div class="result-percent" id="resultPercent">0%</div>
+                <p class="result-message" id="resultMessage"></p>
+            </div>
+            <div class="result-body">
+                <div class="result-actions">
+                    <button class="btn-review" onclick="reviewAnswers()"><i class="fas fa-eye"></i> Xem đáp án</button>
+                    <button class="btn-retry" onclick="retryExam()"><i class="fas fa-redo"></i> Làm lại</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+    <script src="../js/auth.js"></script>
+    <script src="../js/test.js"></script>
+</body>
+</html>

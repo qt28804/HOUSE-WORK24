@@ -1,0 +1,351 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tiến độ học tập - HOUSE WORK</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/ui.css">
+    <link rel="stylesheet" href="../css/tien-do.css">
+</head>
+<body>
+    <div class="nav-wrapper">
+        <nav class="navbar" id="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <div class="nav-logo-icon"><i class="fas fa-microchip"></i></div>
+                    <span>HOUSE WORK</span>
+                </div>
+                <ul class="nav-menu" id="navMenu">
+                    <li class="nav-item"><a href="../index.html" class="nav-link">Trang chủ</a></li>
+                    <li class="nav-item"><a href="tai-lieu.html" class="nav-link">Tài liệu</a></li>
+                    <li class="nav-item"><a href="thu-vien.html" class="nav-link">Thư viện</a></li>
+                    <li class="nav-item"><a href="test.html" class="nav-link">Kiểm tra</a></li>
+                    <li class="nav-item active"><a href="tien-do.html" class="nav-link">Tiến độ</a></li>
+                    <li class="nav-item"><a href="am-nhac.html" class="nav-link"><i class="fas fa-music" style="color:#f093fb;margin-right:.3rem"></i>Âm nhạc</a></li>
+                </ul>
+                <div class="hamburger" id="hamburger">
+                    <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+        <div id="navAuthArea"></div>
+    </div>
+
+    <div class="page-content">
+
+    <!-- Hero -->
+    <section class="progress-hero">
+        <div class="container">
+            <div class="progress-hero-content">
+                <div class="progress-hero-eyebrow"><i class="fas fa-chart-line"></i> Theo dõi học tập</div>
+                <h1><i class="fas fa-chart-line" style="margin-right:.5rem;opacity:.7"></i>Tiến Độ <span>Học Tập</span></h1>
+                <p>Theo dõi quá trình học của bạn mỗi ngày</p>
+                <div class="progress-hero-stats">
+                    <div class="progress-hero-stat"><strong>24</strong><span>Tài liệu</span></div>
+                    <div class="progress-hero-stat"><strong>18</strong><span>Kiểm tra</span></div>
+                    <div class="progress-hero-stat"><strong>45h</strong><span>Thời gian</span></div>
+                    <div class="progress-hero-stat"><strong>85%</strong><span>TB điểm</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard -->
+    <section class="dashboard">
+        <div class="container">
+
+            <!-- Stats cards -->
+            <div class="stats-overview">
+                <div class="stat-card purple">
+                    <div class="stat-icon purple"><i class="fas fa-book-open"></i></div>
+                    <div class="stat-info">
+                        <div class="stat-number">24</div>
+                        <div class="stat-label">Tài liệu đã học</div>
+                        <span class="stat-trend up"><i class="fas fa-arrow-up"></i> +3 tuần này</span>
+                    </div>
+                </div>
+                <div class="stat-card green">
+                    <div class="stat-icon green"><i class="fas fa-check-circle"></i></div>
+                    <div class="stat-info">
+                        <div class="stat-number">18</div>
+                        <div class="stat-label">Bài kiểm tra hoàn thành</div>
+                        <span class="stat-trend up"><i class="fas fa-arrow-up"></i> +2 tuần này</span>
+                    </div>
+                </div>
+                <div class="stat-card orange">
+                    <div class="stat-icon orange"><i class="fas fa-clock"></i></div>
+                    <div class="stat-info">
+                        <div class="stat-number">45h</div>
+                        <div class="stat-label">Thời gian học</div>
+                        <span class="stat-trend up"><i class="fas fa-arrow-up"></i> +5h tuần này</span>
+                    </div>
+                </div>
+                <div class="stat-card blue">
+                    <div class="stat-icon blue"><i class="fas fa-trophy"></i></div>
+                    <div class="stat-info">
+                        <div class="stat-number">85%</div>
+                        <div class="stat-label">Điểm trung bình</div>
+                        <span class="stat-trend up"><i class="fas fa-arrow-up"></i> +2% tháng này</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Circular progress -->
+            <div class="progress-section">
+                <div class="section-header-row">
+                    <div class="section-title-wrap">
+                        <div class="section-title-icon purple"><i class="fas fa-chart-pie"></i></div>
+                        <div>
+                            <div class="section-title">Tổng quan tiến độ</div>
+                            <div class="section-subtitle">Mức độ hoàn thành theo chủ đề</div>
+                        </div>
+                    </div>
+                    <span class="section-badge">4 chủ đề</span>
+                </div>
+                <div class="circle-grid">
+                    <div class="circle-card">
+                        <div class="circle-wrap">
+                            <svg width="100" height="100" viewBox="0 0 100 100">
+                                <circle class="circle-bg" cx="50" cy="50" r="42"/>
+                                <circle class="circle-fill" cx="50" cy="50" r="42" stroke="url(#g1)" stroke-dasharray="264" stroke-dashoffset="66"/>
+                                <defs><linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#667eea"/><stop offset="100%" stop-color="#764ba2"/></linearGradient></defs>
+                            </svg>
+                            <div class="circle-text">75%</div>
+                        </div>
+                        <div class="circle-label">React Hooks</div>
+                        <div class="circle-sublabel">15/20 bài</div>
+                    </div>
+                    <div class="circle-card">
+                        <div class="circle-wrap">
+                            <svg width="100" height="100" viewBox="0 0 100 100">
+                                <circle class="circle-bg" cx="50" cy="50" r="42"/>
+                                <circle class="circle-fill" cx="50" cy="50" r="42" stroke="url(#g2)" stroke-dasharray="264" stroke-dashoffset="145"/>
+                                <defs><linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#4facfe"/><stop offset="100%" stop-color="#00f2fe"/></linearGradient></defs>
+                            </svg>
+                            <div class="circle-text">45%</div>
+                        </div>
+                        <div class="circle-label">Node.js</div>
+                        <div class="circle-sublabel">9/20 bài</div>
+                    </div>
+                    <div class="circle-card">
+                        <div class="circle-wrap">
+                            <svg width="100" height="100" viewBox="0 0 100 100">
+                                <circle class="circle-bg" cx="50" cy="50" r="42"/>
+                                <circle class="circle-fill" cx="50" cy="50" r="42" stroke="url(#g3)" stroke-dasharray="264" stroke-dashoffset="26"/>
+                                <defs><linearGradient id="g3" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#43e97b"/><stop offset="100%" stop-color="#38f9d7"/></linearGradient></defs>
+                            </svg>
+                            <div class="circle-text">90%</div>
+                        </div>
+                        <div class="circle-label">Python ML</div>
+                        <div class="circle-sublabel">18/20 bài</div>
+                    </div>
+                    <div class="circle-card">
+                        <div class="circle-wrap">
+                            <svg width="100" height="100" viewBox="0 0 100 100">
+                                <circle class="circle-bg" cx="50" cy="50" r="42"/>
+                                <circle class="circle-fill" cx="50" cy="50" r="42" stroke="url(#g4)" stroke-dasharray="264" stroke-dashoffset="185"/>
+                                <defs><linearGradient id="g4" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#fa709a"/><stop offset="100%" stop-color="#fee140"/></linearGradient></defs>
+                            </svg>
+                            <div class="circle-text">30%</div>
+                        </div>
+                        <div class="circle-label">Docker & K8s</div>
+                        <div class="circle-sublabel">6/20 bài</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Courses -->
+            <div class="progress-section">
+                <div class="section-header-row">
+                    <div class="section-title-wrap">
+                        <div class="section-title-icon pink"><i class="fas fa-graduation-cap"></i></div>
+                        <div>
+                            <div class="section-title">Khóa học đang theo dõi</div>
+                            <div class="section-subtitle">Cập nhật lần cuối: hôm nay</div>
+                        </div>
+                    </div>
+                    <span class="section-badge">4 khóa học</span>
+                </div>
+                <div class="course-list">
+                    <div class="course-item">
+                        <div class="course-header">
+                            <div class="course-info">
+                                <div class="course-icon" style="background:linear-gradient(135deg,#667eea,#764ba2)"><i class="fab fa-react"></i></div>
+                                <div>
+                                    <div class="course-name">React Hooks Complete</div>
+                                    <div class="course-meta">15 / 20 bài học</div>
+                                </div>
+                            </div>
+                            <div class="course-right">
+                                <span class="course-status ongoing">Đang học</span>
+                                <span class="course-percent">75%</span>
+                            </div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width:75%;background:linear-gradient(90deg,#667eea,#764ba2)"></div>
+                        </div>
+                    </div>
+                    <div class="course-item">
+                        <div class="course-header">
+                            <div class="course-info">
+                                <div class="course-icon" style="background:linear-gradient(135deg,#4facfe,#00f2fe)"><i class="fab fa-node-js"></i></div>
+                                <div>
+                                    <div class="course-name">Node.js Microservices</div>
+                                    <div class="course-meta">9 / 20 bài học</div>
+                                </div>
+                            </div>
+                            <div class="course-right">
+                                <span class="course-status ongoing">Đang học</span>
+                                <span class="course-percent">45%</span>
+                            </div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width:45%;background:linear-gradient(90deg,#4facfe,#00f2fe)"></div>
+                        </div>
+                    </div>
+                    <div class="course-item">
+                        <div class="course-header">
+                            <div class="course-info">
+                                <div class="course-icon" style="background:linear-gradient(135deg,#43e97b,#38f9d7)"><i class="fab fa-python"></i></div>
+                                <div>
+                                    <div class="course-name">Python Machine Learning</div>
+                                    <div class="course-meta">18 / 20 bài học</div>
+                                </div>
+                            </div>
+                            <div class="course-right">
+                                <span class="course-status done">Gần xong</span>
+                                <span class="course-percent">90%</span>
+                            </div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width:90%;background:linear-gradient(90deg,#43e97b,#38f9d7)"></div>
+                        </div>
+                    </div>
+                    <div class="course-item">
+                        <div class="course-header">
+                            <div class="course-info">
+                                <div class="course-icon" style="background:linear-gradient(135deg,#fa709a,#fee140)"><i class="fab fa-docker"></i></div>
+                                <div>
+                                    <div class="course-name">Docker & Kubernetes</div>
+                                    <div class="course-meta">6 / 20 bài học</div>
+                                </div>
+                            </div>
+                            <div class="course-right">
+                                <span class="course-status new">Mới bắt đầu</span>
+                                <span class="course-percent">30%</span>
+                            </div>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width:30%;background:linear-gradient(90deg,#fa709a,#fee140)"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Activity heatmap -->
+            <div class="progress-section">
+                <div class="section-header-row">
+                    <div class="section-title-wrap">
+                        <div class="section-title-icon green"><i class="fas fa-fire"></i></div>
+                        <div>
+                            <div class="section-title">Hoạt động học tập</div>
+                            <div class="section-subtitle">52 ngày liên tục</div>
+                        </div>
+                    </div>
+                    <span class="section-badge">7 ngày / tuần</span>
+                </div>
+                <div class="activity-grid" id="activityGrid"></div>
+                <div class="activity-legend">
+                    <span>Ít hơn</span>
+                    <div class="activity-legend-box" style="background:#f1f5f9"></div>
+                    <div class="activity-legend-box" style="background:#c7d2fe"></div>
+                    <div class="activity-legend-box" style="background:#818cf8"></div>
+                    <div class="activity-legend-box" style="background:#6366f1"></div>
+                    <div class="activity-legend-box" style="background:#4f46e5"></div>
+                    <span>Nhiều hơn</span>
+                </div>
+            </div>
+
+            <!-- Recent tests -->
+            <div class="progress-section">
+                <div class="section-header-row">
+                    <div class="section-title-wrap">
+                        <div class="section-title-icon purple"><i class="fas fa-history"></i></div>
+                        <div>
+                            <div class="section-title">Kết quả kiểm tra gần đây</div>
+                            <div class="section-subtitle">18 bài đã hoàn thành</div>
+                        </div>
+                    </div>
+                    <span class="section-badge">Gần đây</span>
+                </div>
+                <div class="test-list">
+                    <div class="test-item">
+                        <div class="test-score-badge high">A</div>
+                        <div class="test-info">
+                            <div class="test-name">Đại số cơ bản - Toán</div>
+                            <div class="test-date"><i class="fas fa-calendar" style="margin-right:.3rem"></i>Hôm nay, 14:30</div>
+                        </div>
+                        <div class="test-right">
+                            <div class="test-pct" style="color:#15803d">92%</div>
+                            <div class="test-correct">9/10 câu</div>
+                        </div>
+                    </div>
+                    <div class="test-item">
+                        <div class="test-score-badge mid">B</div>
+                        <div class="test-info">
+                            <div class="test-name">Grammar - Thì trong tiếng Anh</div>
+                            <div class="test-date"><i class="fas fa-calendar" style="margin-right:.3rem"></i>Hôm qua, 20:15</div>
+                        </div>
+                        <div class="test-right">
+                            <div class="test-pct" style="color:#a16207">75%</div>
+                            <div class="test-correct">15/20 câu</div>
+                        </div>
+                    </div>
+                    <div class="test-item">
+                        <div class="test-score-badge high">A</div>
+                        <div class="test-info">
+                            <div class="test-name">Lập trình Python cơ bản</div>
+                            <div class="test-date"><i class="fas fa-calendar" style="margin-right:.3rem"></i>2 ngày trước</div>
+                        </div>
+                        <div class="test-right">
+                            <div class="test-pct" style="color:#15803d">87%</div>
+                            <div class="test-correct">13/15 câu</div>
+                        </div>
+                    </div>
+                    <div class="test-item">
+                        <div class="test-score-badge low">C</div>
+                        <div class="test-info">
+                            <div class="test-name">Hóa vô cơ tổng hợp</div>
+                            <div class="test-date"><i class="fas fa-calendar" style="margin-right:.3rem"></i>3 ngày trước</div>
+                        </div>
+                        <div class="test-right">
+                            <div class="test-pct" style="color:#b91c1c">55%</div>
+                            <div class="test-correct">11/20 câu</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    </div>
+
+    <script src="../js/auth.js"></script>
+    <script src="../js/tien-do.js"></script>
+    <script>
+    // Activity heatmap
+    (function(){
+        const grid = document.getElementById('activityGrid');
+        const levels = [0,0,1,0,2,1,0, 1,2,3,2,1,0,0, 0,1,2,4,3,2,1, 2,3,4,3,2,1,0, 1,2,3,4,3,2,1, 0,1,2,3,4,3,2, 1,2,3,2,1,0,0, 0,1,2,3,2,1,0, 1,2,4,3,2,1,0];
+        levels.forEach(l => {
+            const d = document.createElement('div');
+            d.className = 'activity-day' + (l > 0 ? ' l'+l : '');
+            grid.appendChild(d);
+        });
+    })();
+    </script>
+</body>
+</html>

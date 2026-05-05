@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin — HOUSE WORK</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/ui.css">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+
+<!-- ── Top Navbar ── -->
+<div class="nav-wrapper">
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <div class="nav-logo-icon"><i class="fas fa-microchip"></i></div>
+                <span>HOUSE WORK</span>
+            </div>
+            <ul class="nav-menu" id="navMenu">
+                <li class="nav-item"><a href="../index.html" class="nav-link">Trang chủ</a></li>
+                <li class="nav-item"><a href="tai-lieu.html" class="nav-link">Tài liệu</a></li>
+                <li class="nav-item"><a href="thu-vien.html" class="nav-link">Thư viện</a></li>
+                <li class="nav-item"><a href="test.html" class="nav-link">Kiểm tra</a></li>
+                <li class="nav-item"><a href="tien-do.html" class="nav-link">Tiến độ</a></li>
+                <li class="nav-item"><a href="am-nhac.html" class="nav-link"><i class="fas fa-music" style="color:#f093fb;margin-right:.3rem"></i>Âm nhạc</a></li>
+            </ul>
+            <div class="hamburger" id="hamburger"><span class="bar"></span><span class="bar"></span><span class="bar"></span></div>
+        </div>
+    </nav>
+    <div id="navAuthArea"></div>
+</div>
+
+<div class="page-content">
+<div class="adm-layout">
+
+    <!-- ══════════════════════════════════════════
+         SIDEBAR
+    ══════════════════════════════════════════ -->
+    <aside class="adm-sidebar" id="admSidebar">
+        <div class="adm-sidebar-brand">
+            <div class="adm-sidebar-logo"><i class="fas fa-shield-alt"></i></div>
+            <div>
+                <div class="adm-sidebar-title">Admin Panel</div>
+                <div class="adm-sidebar-sub" id="sidebarAdminName">—</div>
+            </div>
+        </div>
+
+        <nav class="adm-nav">
+            <div class="adm-nav-group">
+                <div class="adm-nav-label">Tổng quan</div>
+                <button class="adm-nav-btn active" data-tab="dashboard">
+                    <span class="adm-nav-icon"><i class="fas fa-chart-pie"></i></span>Dashboard
+                </button>
+            </div>
+            <div class="adm-nav-group">
+                <div class="adm-nav-label">Quản lý</div>
+                <button class="adm-nav-btn" data-tab="users">
+                    <span class="adm-nav-icon"><i class="fas fa-users"></i></span>Người dùng
+                    <span class="adm-nav-badge" id="navBadgeUsers">0</span>
+                </button>
+                <button class="adm-nav-btn" data-tab="documents">
+                    <span class="adm-nav-icon"><i class="fas fa-file-alt"></i></span>Tài liệu
+                    <span class="adm-nav-badge" id="navBadgeDocs">0</span>
+                </button>
+            </div>
+            <div class="adm-nav-group">
+                <div class="adm-nav-label">Hệ thống</div>
+                <button class="adm-nav-btn" data-tab="protection">
+                    <span class="adm-nav-icon"><i class="fas fa-lock"></i></span>Bảo vệ nội dung
+                </button>
+                <button class="adm-nav-btn" data-tab="settings">
+                    <span class="adm-nav-icon"><i class="fas fa-sliders-h"></i></span>Cài đặt
+                </button>
+            </div>
+        </nav>
+
+        <div class="adm-sidebar-footer">
+            <button class="adm-sidebar-logout" onclick="logout()">
+                <i class="fas fa-arrow-right-from-bracket"></i> Đăng xuất
+            </button>
+        </div>
+    </aside>
+
+    <!-- ══════════════════════════════════════════
+         MAIN
+    ══════════════════════════════════════════ -->
+    <main class="adm-main" id="admMain">
+
+        <!-- Mobile toggle -->
+        <button class="adm-mob-toggle" id="admMobToggle"><i class="fas fa-bars"></i></button>
+
+        <!-- ─────────────────────────────────────
+             TAB: Dashboard
+        ───────────────────────────────────── -->
+        <section class="adm-tab active" id="tab-dashboard">
+            <div class="adm-page-hd">
+                <div>
+                    <h1 class="adm-page-title">Dashboard</h1>
+                    <p class="adm-page-sub" id="dashDate"></p>
+                </div>
+                <button class="adm-btn adm-btn-primary" onclick="refreshDashboard()">
+                    <i class="fas fa-sync-alt"></i> Làm mới
+                </button>
+            </div>
+
+            <!-- Stat cards -->
+            <div class="adm-stat-grid">
+                <div class="adm-stat-card">
+                    <div class="adm-stat-icon" style="background:linear-gradient(135deg,#667eea,#764ba2)"><i class="fas fa-users"></i></div>
+                    <div class="adm-stat-body">
+                        <div class="adm-stat-val" id="statUsers">0</div>
+                        <div class="adm-stat-lbl">Người dùng</div>
+                    </div>
+                </div>
+                <div class="adm-stat-card">
+                    <div class="adm-stat-icon" style="background:linear-gradient(135deg,#43e97b,#38f9d7)"><i class="fas fa-file-alt"></i></div>
+                    <div class="adm-stat-body">
+                        <div class="adm-stat-val" id="statDocs">0</div>
+                        <div class="adm-stat-lbl">Tài liệu</div>
+                    </div>
+                </div>
+                <div class="adm-stat-card">
+                    <div class="adm-stat-icon" style="background:linear-gradient(135deg,#f093fb,#f5576c)"><i class="fas fa-ban"></i></div>
+                    <div class="adm-stat-body">
+                        <div class="adm-stat-val" id="statViolations">0</div>
+                        <div class="adm-stat-lbl">Vi phạm hôm nay</div>
+                    </div>
+                </div>
+                <div class="adm-stat-card">
+                    <div class="adm-stat-icon" style="background:linear-gradient(135deg,#4facfe,#00f2fe)"><i class="fas fa-user-shield"></i></div>
+                    <div class="adm-stat-body">
+                        <div class="adm-stat-val" id="statAdmins">0</div>
+                        <div class="adm-stat-lbl">Quản trị viên</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom grid -->
+            <div class="adm-dash-grid">
+                <div class="adm-card">
+                    <div class="adm-card-hd">
+                        <h2 class="adm-card-title"><i class="fas fa-users"></i> Người dùng gần đây</h2>
+                        <button class="adm-link-btn" onclick="switchTab('users')">Xem tất cả <i class="fas fa-arrow-right"></i></button>
+                    </div>
+                    <div id="dashRecentUsers"></div>
+                </div>
+                <div class="adm-card">
+                    <div class="adm-card-hd">
+                        <h2 class="adm-card-title"><i class="fas fa-ban"></i> Vi phạm gần đây</h2>
+                    </div>
+                    <div id="dashViolations"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ─────────────────────────────────────
+             TAB: Người dùng
+        ───────────────────────────────────── -->
+        <section class="adm-tab" id="tab-users">
+            <div class="adm-page-hd">
+                <div>
+                    <h1 class="adm-page-title">Người dùng</h1>
+                    <p class="adm-page-sub">Quản lý tài khoản và phân quyền</p>
+                </div>
+                <div class="adm-page-actions">
+                    <div class="adm-search">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="userSearch" placeholder="Tìm kiếm..." oninput="filterUsers()">
+                    </div>
+                    <button class="adm-btn adm-btn-primary" onclick="openAddUserModal()">
+                        <i class="fas fa-user-plus"></i> Thêm người dùng
+                    </button>
+                </div>
+            </div>
+
+            <div class="adm-card">
+                <div class="adm-card-hd">
+                    <h2 class="adm-card-title"><i class="fas fa-users"></i> Danh sách</h2>
+                    <span class="adm-badge-count" id="userCountBadge">0</span>
+                </div>
+                <div class="adm-table-wrap">
+                    <table class="adm-table">
+                        <thead>
+                            <tr>
+                                <th>Người dùng</th>
+                                <th>Tên đăng nhập</th>
+                                <th>Vai trò</th>
+                                <th>Ngày tạo</th>
+                                <th style="text-align:right">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ─────────────────────────────────────
+             TAB: Tài liệu
+        ───────────────────────────────────── -->
+        <section class="adm-tab" id="tab-documents">
+            <div class="adm-page-hd">
+                <div>
+                    <h1 class="adm-page-title">Tài liệu</h1>
+                    <p class="adm-page-sub">Quản lý kho tài liệu học tập</p>
+                </div>
+                <div class="adm-page-actions">
+                    <div class="adm-search">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="docSearch" placeholder="Tìm tài liệu..." oninput="filterDocs()">
+                    </div>
+                    <select class="adm-select" id="docSubjectFilter" onchange="filterDocs()">
+                        <option value="">Tất cả môn</option>
+                        <option value="toan">Toán</option>
+                        <option value="ly">Vật lý</option>
+                        <option value="hoa">Hóa học</option>
+                        <option value="tin">Tin học</option>
+                        <option value="su">Lịch sử</option>
+                        <option value="cong-nghe">Công nghệ</option>
+                        <option value="tieng-anh">Tiếng Anh</option>
+                        <option value="tong-de">Tổng đề</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="adm-card">
+                <div class="adm-card-hd">
+                    <h2 class="adm-card-title"><i class="fas fa-file-alt"></i> Danh sách tài liệu</h2>
+                    <span class="adm-badge-count" id="docCountBadge">0</span>
+                </div>
+                <div class="adm-table-wrap">
+                    <table class="adm-table">
+                        <thead>
+                            <tr>
+                                <th>Tên tài liệu</th>
+                                <th>Môn học</th>
+                                <th>Chương</th>
+                                <th>Lượt xem</th>
+                                <th>File</th>
+                                <th style="text-align:right">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="docTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ─────────────────────────────────────
+             TAB: Bảo vệ nội dung
+        ───────────────────────────────────── -->
+        <section class="adm-tab" id="tab-protection">
+            <div class="adm-page-hd">
+                <div>
+                    <h1 class="adm-page-title">Bảo vệ nội dung</h1>
+                    <p class="adm-page-sub">Cấu hình chống sao chép và bảo mật</p>
+                </div>
+                <button class="adm-btn adm-btn-primary" onclick="saveProtectionSettings()">
+                    <i class="fas fa-save"></i> Lưu cài đặt
+                </button>
+            </div>
+
+            <div class="adm-two-col">
+                <div class="adm-card">
+                    <div class="adm-card-hd">
+                        <h2 class="adm-card-title"><i class="fas fa-lock"></i> Cài đặt bảo vệ</h2>
+                    </div>
+                    <div class="adm-settings-list">
+                        <div class="adm-setting-row">
+                            <div class="adm-setting-info">
+                                <div class="adm-setting-lbl">Chặn Ctrl+C / Ctrl+A</div>
+                                <div class="adm-setting-desc">Ngăn người dùng sao chép văn bản</div>
+                            </div>
+                            <label class="adm-toggle"><input type="checkbox" id="prot_blockCopy"><span class="adm-toggle-track"><span class="adm-toggle-thumb"></span></span></label>
+                        </div>
+                        <div class="adm-setting-row">
+                            <div class="adm-setting-info">
+                                <div class="adm-setting-lbl">Chặn chuột phải</div>
+                                <div class="adm-setting-desc">Tắt menu context khi click phải</div>
+                            </div>
+                            <label class="adm-toggle"><input type="checkbox" id="prot_blockRightClick"><span class="adm-toggle-track"><span class="adm-toggle-thumb"></span></span></label>
+                        </div>
+                        <div class="adm-setting-row">
+                            <div class="adm-setting-info">
+                                <div class="adm-setting-lbl">Phát hiện DevTools</div>
+                                <div class="adm-setting-desc">Cảnh báo khi mở Developer Tools</div>
+                            </div>
+                            <label class="adm-toggle"><input type="checkbox" id="prot_blockDevtools"><span class="adm-toggle-track"><span class="adm-toggle-thumb"></span></span></label>
+                        </div>
+                        <div class="adm-setting-row">
+                            <div class="adm-setting-info">
+                                <div class="adm-setting-lbl">Watermark tài liệu</div>
+                                <div class="adm-setting-desc">Thêm tên người dùng vào tài liệu</div>
+                            </div>
+                            <label class="adm-toggle"><input type="checkbox" id="prot_watermark"><span class="adm-toggle-track"><span class="adm-toggle-thumb"></span></span></label>
+                        </div>
+                        <div class="adm-setting-row">
+                            <div class="adm-setting-info">
+                                <div class="adm-setting-lbl">Ghi log vi phạm</div>
+                                <div class="adm-setting-desc">Lưu lại mọi hành vi sao chép</div>
+                            </div>
+                            <label class="adm-toggle"><input type="checkbox" id="prot_logViolations"><span class="adm-toggle-track"><span class="adm-toggle-thumb"></span></span></label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="adm-card">
+                    <div class="adm-card-hd">
+                        <h2 class="adm-card-title"><i class="fas fa-ban"></i> Log vi phạm</h2>
+                        <button class="adm-link-btn danger" onclick="clearViolationLog()"><i class="fas fa-trash"></i> Xóa log</button>
+                    </div>
+                    <div id="violationLog"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ─────────────────────────────────────
+             TAB: Cài đặt
+        ───────────────────────────────────── -->
+        <section class="adm-tab" id="tab-settings">
+            <div class="adm-page-hd">
+                <div>
+                    <h1 class="adm-page-title">Cài đặt hệ thống</h1>
+                    <p class="adm-page-sub">Tùy chỉnh hoạt động của nền tảng</p>
+                </div>
+                <button class="adm-btn adm-btn-primary" onclick="saveSystemSettings()">
+                    <i class="fas fa-save"></i> Lưu cài đặt
+                </button>
+            </div>
+
+            <div class="adm-settings-col">
+                <div class="adm-card">
+                    <div class="adm-card-hd">
+                        <h2 class="adm-card-title"><i class="fas fa-globe"></i> Chung</h2>
+                    </div>
+                    <div class="adm-settings-list">
+                        <div class="adm-setting-row">
+                            <div class="adm-setting-info">
+                                <div class="adm-setting-lbl">Cho phép đăng ký mới</div>
+                                <div class="adm-setting-desc">Người dùng có thể tự tạo tài khoản</div>
+                            </div>
+                            <label class="adm-toggle"><input type="checkbox" id="sys_allowRegister"><span class="adm-toggle-track"><span class="adm-toggle-thumb"></span></span></label>
+                        </div>
+                        <div class="adm-setting-row">
+                            <div class="adm-setting-info">
+                                <div class="adm-setting-lbl">Chế độ bảo trì</div>
+                                <div class="adm-setting-desc">Tạm dừng truy cập cho người dùng thường</div>
+                            </div>
+                            <label class="adm-toggle"><input type="checkbox" id="sys_maintenance"><span class="adm-toggle-track"><span class="adm-toggle-thumb"></span></span></label>
+                        </div>
+                        <div class="adm-setting-row">
+                            <div class="adm-setting-info">
+                                <div class="adm-setting-lbl">Thông báo vi phạm</div>
+                                <div class="adm-setting-desc">Hiện cảnh báo khi phát hiện vi phạm</div>
+                            </div>
+                            <label class="adm-toggle"><input type="checkbox" id="sys_notifyViolation"><span class="adm-toggle-track"><span class="adm-toggle-thumb"></span></span></label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="adm-card">
+                    <div class="adm-card-hd">
+                        <h2 class="adm-card-title"><i class="fas fa-database"></i> Dữ liệu</h2>
+                    </div>
+                    <div class="adm-settings-list">
+                        <div class="adm-setting-row">
+                            <div class="adm-setting-info">
+                                <div class="adm-setting-lbl">Xuất danh sách người dùng</div>
+                                <div class="adm-setting-desc">Tải xuống dữ liệu dạng JSON</div>
+                            </div>
+                            <button class="adm-btn adm-btn-outline" onclick="exportUsers()">
+                                <i class="fas fa-download"></i> Xuất JSON
+                            </button>
+                        </div>
+                        <div class="adm-setting-row">
+                            <div class="adm-setting-info">
+                                <div class="adm-setting-lbl">Xóa toàn bộ log vi phạm</div>
+                                <div class="adm-setting-desc">Không thể hoàn tác sau khi xóa</div>
+                            </div>
+                            <button class="adm-btn adm-btn-danger" onclick="clearViolationLog()">
+                                <i class="fas fa-trash"></i> Xóa log
+                            </button>
+                        </div>
+                        <div class="adm-setting-row">
+                            <div class="adm-setting-info">
+                                <div class="adm-setting-lbl">Reset toàn bộ dữ liệu</div>
+                                <div class="adm-setting-desc">Xóa tất cả người dùng và cài đặt (giữ admin)</div>
+                            </div>
+                            <button class="adm-btn adm-btn-danger" onclick="confirmResetData()">
+                                <i class="fas fa-exclamation-triangle"></i> Reset
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+</div>
+</div><!-- /.page-content -->
+
+<!-- ══════════════════════════════════════════
+     MODAL: Thêm / Sửa người dùng
+══════════════════════════════════════════ -->
+<div class="adm-modal-overlay" id="userModal">
+    <div class="adm-modal">
+        <div class="adm-modal-hd">
+            <h3 id="userModalTitle">Thêm người dùng</h3>
+            <button class="adm-modal-close" onclick="closeUserModal()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="adm-modal-body">
+            <input type="hidden" id="editUserId">
+            <div class="adm-form-group">
+                <label>Tên hiển thị</label>
+                <input type="text" id="formDisplayName" placeholder="Nguyễn Văn A" class="adm-input">
+            </div>
+            <div class="adm-form-group">
+                <label>Tên đăng nhập</label>
+                <input type="text" id="formUsername" placeholder="nguyenvana" class="adm-input">
+            </div>
+            <div class="adm-form-group" id="formPasswordGroup">
+                <label>Mật khẩu</label>
+                <input type="password" id="formPassword" placeholder="••••••••" class="adm-input">
+            </div>
+            <div class="adm-form-group">
+                <label>Vai trò</label>
+                <select id="formRole" class="adm-input">
+                    <option value="user">Người dùng</option>
+                    <option value="admin">Quản trị viên</option>
+                </select>
+            </div>
+        </div>
+        <div class="adm-modal-ft">
+            <button class="adm-btn adm-btn-ghost" onclick="closeUserModal()">Hủy</button>
+            <button class="adm-btn adm-btn-primary" onclick="saveUser()">
+                <i class="fas fa-save"></i> Lưu
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MODAL: Xác nhận xóa
+══════════════════════════════════════════ -->
+<div class="adm-modal-overlay" id="confirmModal">
+    <div class="adm-modal adm-modal-sm">
+        <div class="adm-modal-hd">
+            <h3 id="confirmTitle">Xác nhận</h3>
+            <button class="adm-modal-close" onclick="closeConfirmModal()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="adm-modal-body">
+            <p id="confirmMessage" style="color:#475569;font-size:.9rem;line-height:1.6"></p>
+        </div>
+        <div class="adm-modal-ft">
+            <button class="adm-btn adm-btn-ghost" onclick="closeConfirmModal()">Hủy</button>
+            <button class="adm-btn adm-btn-danger" id="confirmOkBtn">Xác nhận</button>
+        </div>
+    </div>
+</div>
+
+<!-- Toast -->
+<div id="admToast" class="adm-toast"></div>
+
+<script src="../js/auth.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="../js/supabase.js"></script>
+<script src="../js/admin.js"></script>
+</body>
+</html>

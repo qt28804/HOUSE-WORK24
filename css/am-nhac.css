@@ -1,0 +1,223 @@
+/* ============================================================
+   am-nhac.css — Styles cho trang Âm nhạc
+   ============================================================ */
+
+/* Active nav — dùng style từ ui.css */
+/* Trên trang âm nhạc nền tối, navbar floating dark pill hoà hợp tự nhiên */
+
+/* ══ ĐỔI BACKGROUND: thay giá trị --bg-music bên dưới ══
+   Màu đơn:    #1a1a2e
+   Gradient:   linear-gradient(135deg, #1a1a2e, #16213e)
+   Ảnh:        url('../assets/images/bg-music.jpg') center/cover no-repeat
+══════════════════════════════════════════════════════════ */
+:root {
+    --bg-music: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+}
+
+body { background: var(--bg-music); min-height: 100vh; }
+
+.music-page {
+    min-height: 100vh;
+    padding: 100px 0 60px;
+    display: flex;
+    align-items: center;
+}
+
+.music-wrap {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 0 20px;
+    width: 100%;
+}
+
+/* ── Title ── */
+.music-title {
+    text-align: center;
+    color: white;
+    margin-bottom: 2.5rem;
+}
+
+.music-title h1 {
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+}
+
+.music-title p { opacity: 0.7; font-size: 1rem; }
+
+/* ── Input link box ── */
+.link-box {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 16px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.link-box label {
+    display: block;
+    color: rgba(255,255,255,0.8);
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+    letter-spacing: 0.5px;
+}
+
+.link-input-row { display: flex; gap: 0.6rem; }
+
+.link-input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    border: 1.5px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.1);
+    color: white;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.link-input::placeholder { color: rgba(255,255,255,0.4); }
+.link-input:focus { border-color: #667eea; }
+
+.btn-load {
+    padding: 0.75rem 1.4rem;
+    background: linear-gradient(135deg, #667eea, #f093fb);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    white-space: nowrap;
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.btn-load:hover { opacity: 0.9; transform: translateY(-1px); }
+
+/* ── Player area ── */
+.player-area {
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 16px;
+    overflow: hidden;
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.player-placeholder {
+    color: rgba(255,255,255,0.4);
+    font-size: 0.9rem;
+    text-align: center;
+    padding: 2rem;
+}
+
+.player-placeholder i {
+    font-size: 2rem;
+    display: block;
+    margin-bottom: 0.5rem;
+    opacity: 0.5;
+}
+
+#playerFrame { width: 100%; border: none; display: none; border-radius: 16px; }
+#audioEl { width: 100%; display: none; }
+
+/* ── Sample playlist ── */
+.sample-list {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.sample-list h4 {
+    color: rgba(255,255,255,0.7);
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 1rem;
+}
+
+.sample-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.sample-item:last-child { border-bottom: none; }
+.sample-item:hover { opacity: 0.8; }
+
+.sample-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+    color: white;
+    flex-shrink: 0;
+}
+
+.sample-info { flex: 1; }
+.sample-name { color: white; font-size: 0.88rem; font-weight: 600; }
+.sample-type { color: rgba(255,255,255,0.45); font-size: 0.75rem; }
+
+.sample-play {
+    color: rgba(255,255,255,0.4);
+    font-size: 0.8rem;
+    transition: color 0.2s;
+}
+
+.sample-item:hover .sample-play { color: #667eea; }
+
+/* ── Code guide ── */
+.code-guide {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 1.5rem;
+}
+
+.code-guide h4 {
+    color: rgba(255,255,255,0.8);
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.code-guide h4 i { color: #f6ad55; }
+
+.code-block {
+    background: #0d1117;
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    font-family: 'Courier New', monospace;
+    font-size: 0.8rem;
+    line-height: 1.8;
+    overflow-x: auto;
+    margin-bottom: 0.75rem;
+}
+
+.code-block:last-child { margin-bottom: 0; }
+
+.c-comment { color: #8b949e; }
+.c-key     { color: #79c0ff; }
+.c-str     { color: #a5d6ff; }
+.c-val     { color: #7ee787; }

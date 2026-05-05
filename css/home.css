@@ -1,0 +1,297 @@
+/* ============================================================
+   home.css — Styles riêng cho trang chủ (index.html)
+   ============================================================ */
+
+/* Active nav — dùng style từ ui.css */
+
+/* ── Hero badge ── */
+.hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255,255,255,0.18);
+    backdrop-filter: blur(12px) saturate(160%);
+    border: 1px solid rgba(255,255,255,0.35);
+    color: white;
+    padding: 0.4rem 1.1rem;
+    border-radius: 50px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+}
+
+.hero-badge span { color: #ffd700; }
+
+/* ── Hero stats row ── */
+.hero-stats {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 2.5rem;
+    flex-wrap: wrap;
+}
+
+.hero-stat {
+    text-align: center;
+    color: white;
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 14px;
+    padding: 0.75rem 1.25rem;
+    min-width: 90px;
+}
+
+.hero-stat strong {
+    display: block;
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.hero-stat small {
+    font-size: 0.75rem;
+    opacity: 0.8;
+    font-weight: 500;
+}
+
+/* ── Floating card icons ── */
+.float-card-1 i, .float-card-2 i, .float-card-3 i { font-size: 2.5rem; }
+
+/* ── Tech strip ── */
+.tech-strip {
+    background: white;
+    padding: 1.25rem 0;
+    border-bottom: 1px solid #f0f4f8;
+    overflow: hidden;
+}
+
+.tech-strip-inner {
+    display: flex;
+    gap: 2.5rem;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    opacity: 0.45;
+}
+
+.tech-strip-inner i { font-size: 1.8rem; color: #4a5568; }
+.tech-strip-inner span { font-size: 0.82rem; font-weight: 600; color: #4a5568; }
+.tech-item {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+    transition: opacity 0.2s;
+}
+.tech-item:hover { opacity: 1.5; }
+
+/* ── Feature card icon color variants ── */
+.feature-card:nth-child(1) .feature-icon { background: linear-gradient(135deg,#667eea,#764ba2); }
+.feature-card:nth-child(2) .feature-icon { background: linear-gradient(135deg,#f093fb,#f5576c); }
+.feature-card:nth-child(3) .feature-icon { background: linear-gradient(135deg,#4facfe,#00f2fe); }
+.feature-card:nth-child(4) .feature-icon { background: linear-gradient(135deg,#43e97b,#38f9d7); }
+.feature-card:nth-child(5) .feature-icon { background: linear-gradient(135deg,#fa709a,#fee140); }
+.feature-card:nth-child(6) .feature-icon { background: linear-gradient(135deg,#a18cd1,#fbc2eb); }
+
+/* ── Doc card "Xem thêm" link ── */
+.doc-card-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-top: 1rem;
+    color: #667eea;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: gap 0.2s;
+}
+
+.doc-card-link:hover { gap: 0.7rem; }
+
+/* ── CTA section ── */
+.cta {
+    padding: 100px 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 55%, #f093fb 100%);
+    text-align: center;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.cta::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000"><defs><pattern id="g" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0L0 0 0 40" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="1"/></pattern></defs><rect width="100%25" height="100%25" fill="url(%23g)"/></svg>');
+}
+
+/* Orb decorations */
+.cta::after {
+    content: '';
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,255,255,0.07) 0%, transparent 70%);
+    bottom: -200px;
+    left: -100px;
+    pointer-events: none;
+}
+
+.cta-content { position: relative; z-index: 2; }
+
+.cta h2 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800;
+    margin-bottom: 1rem;
+    letter-spacing: -0.5px;
+}
+
+.cta p {
+    font-size: 1.1rem;
+    opacity: 0.88;
+    margin-bottom: 2.5rem;
+    max-width: 520px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.7;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.btn-white {
+    background: white;
+    color: #667eea;
+    padding: 0.9rem 2.2rem;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: transform 0.25s, box-shadow 0.25s;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+
+.btn-white:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.22);
+}
+
+.btn-outline-white {
+    background: rgba(255,255,255,0.15);
+    color: white;
+    border: 1.5px solid rgba(255,255,255,0.5);
+    padding: 0.9rem 2.2rem;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background 0.25s, transform 0.25s, border-color 0.25s;
+    backdrop-filter: blur(10px);
+}
+
+.btn-outline-white:hover {
+    background: rgba(255,255,255,0.25);
+    transform: translateY(-2px);
+    border-color: rgba(255,255,255,0.75);
+}
+
+/* ── Footer ── */
+.footer {
+    background: #0f172a;
+    color: #94a3b8;
+    padding: 64px 0 32px;
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 3rem;
+}
+
+.footer-brand .nav-logo {
+    color: white;
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+}
+
+.footer-brand p {
+    line-height: 1.75;
+    font-size: 0.9rem;
+    color: #64748b;
+}
+
+.footer-col h4 {
+    color: white;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+}
+
+.footer-col ul { list-style: none; }
+.footer-col ul li { margin-bottom: 0.6rem; }
+
+.footer-col ul li a {
+    color: #64748b;
+    text-decoration: none;
+    font-size: 0.88rem;
+    transition: color 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.footer-col ul li a:hover { color: #a5b4fc; }
+
+.footer-bottom {
+    border-top: 1px solid #1e293b;
+    padding-top: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    font-size: 0.82rem;
+    color: #475569;
+}
+
+.footer-socials { display: flex; gap: 0.75rem; }
+
+.footer-socials a {
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    background: #1e293b;
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95rem;
+    transition: background 0.2s, color 0.2s, transform 0.2s;
+}
+
+.footer-socials a:hover {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    transform: translateY(-2px);
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+    .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .hero-stats { gap: 1.5rem; }
+    .cta-buttons { flex-direction: column; align-items: center; }
+}

@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thư viện - HOUSE WORK</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/ui.css">
+    <link rel="stylesheet" href="../css/thu-vien.css">
+</head>
+<body>
+
+    <div class="nav-wrapper">
+        <nav class="navbar" id="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <div class="nav-logo-icon"><i class="fas fa-microchip"></i></div>
+                    <span>HOUSE WORK</span>
+                </div>
+                <ul class="nav-menu" id="navMenu">
+                    <li class="nav-item"><a href="../index.html" class="nav-link">Trang chủ</a></li>
+                    <li class="nav-item"><a href="tai-lieu.html" class="nav-link">Tài liệu</a></li>
+                    <li class="nav-item active"><a href="thu-vien.html" class="nav-link">Thư viện</a></li>
+                    <li class="nav-item"><a href="test.html" class="nav-link">Kiểm tra</a></li>
+                    <li class="nav-item"><a href="tien-do.html" class="nav-link">Tiến độ</a></li>
+                    <li class="nav-item"><a href="am-nhac.html" class="nav-link"><i class="fas fa-music" style="color:#f093fb;margin-right:.3rem"></i>Âm nhạc</a></li>
+                </ul>
+                <div class="hamburger" id="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+        <div id="navAuthArea"></div>
+    </div>
+
+    <div class="page-content">
+
+    <!-- Hero -->
+    <section class="library-hero">
+        <div class="container">
+            <div class="hero-eyebrow">
+                <i class="fas fa-layer-group"></i> Kho tài nguyên học tập
+            </div>
+            <h1>Thư viện <span>tài liệu</span><br>đa phương tiện</h1>
+            <p>PDF, Video, Code — tất cả được tổ chức gọn gàng, dễ tìm kiếm và sử dụng ngay.</p>
+            <div class="hero-stats-row">
+                <div class="hero-stat-pill">
+                    <i class="fas fa-file-pdf"></i>
+                    <strong>120+</strong> PDF
+                </div>
+                <div class="hero-stat-pill">
+                    <i class="fas fa-video"></i>
+                    <strong>85+</strong> Video
+                </div>
+                <div class="hero-stat-pill">
+                    <i class="fas fa-code"></i>
+                    <strong>60+</strong> Code
+                </div>
+                <div class="hero-stat-pill">
+                    <i class="fas fa-download"></i>
+                    <strong>50k+</strong> Lượt tải
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filter bar -->
+    <div class="library-filters">
+        <div class="container">
+            <div class="filter-inner">
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-type="all">
+                        <i class="fas fa-th-large"></i> Tất cả
+                        <span class="filter-count">6</span>
+                    </button>
+                    <button class="filter-btn" data-type="pdf">
+                        <i class="fas fa-file-pdf"></i> PDF
+                        <span class="filter-count">2</span>
+                    </button>
+                    <button class="filter-btn" data-type="video">
+                        <i class="fas fa-play-circle"></i> Video
+                        <span class="filter-count">2</span>
+                    </button>
+                    <button class="filter-btn" data-type="code">
+                        <i class="fas fa-code"></i> Code
+                        <span class="filter-count">2</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Library grid -->
+    <section class="library-main">
+        <div class="container">
+            <div class="library-grid" id="libraryGrid">
+
+                <!-- PDF 1 -->
+                <div class="library-item" data-type="pdf">
+                    <div class="item-thumbnail"><i class="fas fa-file-pdf"></i></div>
+                    <div class="item-content">
+                        <span class="item-type type-pdf"><i class="fas fa-file-pdf"></i> PDF</span>
+                        <h3 class="item-title">React Hooks Complete Guide</h3>
+                        <p class="item-desc">Tài liệu đầy đủ về React Hooks với 50+ ví dụ thực tế từ cơ bản đến nâng cao.</p>
+                        <div class="item-meta">
+                            <span><i class="fas fa-book-open"></i> 128 trang</span>
+                            <span><i class="fas fa-download"></i> 2.4k lượt tải</span>
+                            <span><i class="fas fa-clock"></i> 2 ngày trước</span>
+                        </div>
+                        <div class="item-actions">
+                            <button class="btn-view" onclick="viewDocument('react-hooks.pdf','React Hooks Complete Guide')">
+                                <i class="fas fa-eye"></i> Xem tài liệu
+                            </button>
+                            <button class="btn-bookmark" title="Lưu lại" aria-label="Lưu lại">
+                                <i class="far fa-bookmark"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video 1 -->
+                <div class="library-item" data-type="video">
+                    <div class="item-thumbnail"><i class="fas fa-play-circle"></i></div>
+                    <div class="item-content">
+                        <span class="item-type type-video"><i class="fas fa-video"></i> Video</span>
+                        <h3 class="item-title">Node.js Microservices</h3>
+                        <p class="item-desc">Video hướng dẫn xây dựng kiến trúc microservices với Node.js và Docker.</p>
+                        <div class="item-meta">
+                            <span><i class="fas fa-clock"></i> 4h 30m</span>
+                            <span><i class="fas fa-eye"></i> 1.8k lượt xem</span>
+                            <span><i class="fas fa-calendar"></i> 5 ngày trước</span>
+                        </div>
+                        <div class="item-actions">
+                            <button class="btn-view" onclick="viewDocument('nodejs-micro.mp4','Node.js Microservices')">
+                                <i class="fas fa-play"></i> Xem video
+                            </button>
+                            <button class="btn-bookmark" title="Lưu lại" aria-label="Lưu lại">
+                                <i class="far fa-bookmark"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Code 1 -->
+                <div class="library-item" data-type="code">
+                    <div class="item-thumbnail"><i class="fas fa-terminal"></i></div>
+                    <div class="item-content">
+                        <span class="item-type type-code"><i class="fas fa-code"></i> Code</span>
+                        <h3 class="item-title">Python FastAPI Template</h3>
+                        <p class="item-desc">Template production-ready với JWT auth, SQLAlchemy, Docker Compose và CI/CD.</p>
+                        <div class="item-meta">
+                            <span><i class="fab fa-python"></i> Python 3.11</span>
+                            <span><i class="fas fa-download"></i> 980 lượt tải</span>
+                            <span><i class="fas fa-star"></i> 4.8</span>
+                        </div>
+                        <div class="item-actions">
+                            <button class="btn-view" onclick="viewDocument('fastapi-template.zip','Python FastAPI Template')">
+                                <i class="fas fa-download"></i> Tải code
+                            </button>
+                            <button class="btn-bookmark" title="Lưu lại" aria-label="Lưu lại">
+                                <i class="far fa-bookmark"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PDF 2 -->
+                <div class="library-item" data-type="pdf">
+                    <div class="item-thumbnail"><i class="fas fa-ship"></i></div>
+                    <div class="item-content">
+                        <span class="item-type type-pdf"><i class="fas fa-file-pdf"></i> PDF</span>
+                        <h3 class="item-title">Docker & Kubernetes Guide</h3>
+                        <p class="item-desc">Từ Docker cơ bản đến K8s nâng cao: Deployment, Service, Ingress và Helm charts.</p>
+                        <div class="item-meta">
+                            <span><i class="fas fa-book-open"></i> 96 trang</span>
+                            <span><i class="fas fa-download"></i> 3.1k lượt tải</span>
+                            <span><i class="fas fa-clock"></i> 1 tuần trước</span>
+                        </div>
+                        <div class="item-actions">
+                            <button class="btn-view" onclick="viewDocument('docker-k8s.pdf','Docker & Kubernetes Guide')">
+                                <i class="fas fa-eye"></i> Xem tài liệu
+                            </button>
+                            <button class="btn-bookmark" title="Lưu lại" aria-label="Lưu lại">
+                                <i class="far fa-bookmark"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video 2 -->
+                <div class="library-item" data-type="video">
+                    <div class="item-thumbnail"><i class="fas fa-brain"></i></div>
+                    <div class="item-content">
+                        <span class="item-type type-video"><i class="fas fa-video"></i> Video</span>
+                        <h3 class="item-title">Machine Learning Basics</h3>
+                        <p class="item-desc">Khóa học ML cơ bản: regression, classification, neural network với scikit-learn.</p>
+                        <div class="item-meta">
+                            <span><i class="fas fa-clock"></i> 6h 15m</span>
+                            <span><i class="fas fa-eye"></i> 4.2k lượt xem</span>
+                            <span><i class="fas fa-star"></i> 4.9</span>
+                        </div>
+                        <div class="item-actions">
+                            <button class="btn-view" onclick="viewDocument('ml-basics.mp4','Machine Learning Basics')">
+                                <i class="fas fa-play"></i> Xem video
+                            </button>
+                            <button class="btn-bookmark" title="Lưu lại" aria-label="Lưu lại">
+                                <i class="far fa-bookmark"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Code 2 -->
+                <div class="library-item" data-type="code">
+                    <div class="item-thumbnail"><i class="fab fa-react"></i></div>
+                    <div class="item-content">
+                        <span class="item-type type-code"><i class="fas fa-code"></i> Code</span>
+                        <h3 class="item-title">React TypeScript Boilerplate</h3>
+                        <p class="item-desc">Boilerplate React + TypeScript + Vite với ESLint, Zustand, Axios và Vitest.</p>
+                        <div class="item-meta">
+                            <span><i class="fab fa-react"></i> React 18</span>
+                            <span><i class="fas fa-download"></i> 1.5k lượt tải</span>
+                            <span><i class="fas fa-star"></i> 4.7</span>
+                        </div>
+                        <div class="item-actions">
+                            <button class="btn-view" onclick="viewDocument('react-ts-boilerplate.zip','React TypeScript Boilerplate')">
+                                <i class="fas fa-download"></i> Tải code
+                            </button>
+                            <button class="btn-bookmark" title="Lưu lại" aria-label="Lưu lại">
+                                <i class="far fa-bookmark"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Empty state -->
+            <div class="library-empty" id="libraryEmpty">
+                <i class="fas fa-box-open"></i>
+                <p>Không có tài liệu nào trong danh mục này.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI Summary Modal -->
+    <div id="docModal" class="doc-modal">
+        <div class="doc-modal-inner">
+            <div class="doc-modal-header">
+                <h2 id="modalTitle"></h2>
+                <button id="modalClose" class="btn-modal-close" aria-label="Đóng">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="doc-modal-body">
+                <div class="ai-summary">
+                    <div class="ai-summary-header">
+                        <i class="fas fa-robot"></i> Tóm tắt AI
+                    </div>
+                    <p id="summaryText" class="ai-summary-text">Đang phân tích tài liệu...</p>
+                </div>
+                <div class="doc-modal-actions">
+                    <button class="btn-view" onclick="alert('Đang mở tài liệu...')">
+                        <i class="fas fa-eye"></i> Xem đầy đủ
+                    </button>
+                    <button class="btn-view btn-view-green" onclick="alert('Đang tải xuống...')">
+                        <i class="fas fa-download"></i> Tải xuống
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    </div><!-- /.page-content -->
+
+    <script src="../js/auth.js"></script>
+    <script src="../js/thu-vien.js"></script>
+</body>
+</html>

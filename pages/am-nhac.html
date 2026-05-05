@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Âm nhạc - HOUSE WORK</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/ui.css">
+    <link rel="stylesheet" href="../css/am-nhac.css">
+</head>
+<body>
+
+    <div class="nav-wrapper">
+        <nav class="navbar" id="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <div class="nav-logo-icon"><i class="fas fa-microchip"></i></div>
+                    <span>HOUSE WORK</span>
+                </div>
+                <ul class="nav-menu" id="navMenu">
+                    <li class="nav-item"><a href="../index.html" class="nav-link">Trang chủ</a></li>
+                    <li class="nav-item"><a href="tai-lieu.html" class="nav-link">Tài liệu</a></li>
+                    <li class="nav-item"><a href="thu-vien.html" class="nav-link">Thư viện</a></li>
+                    <li class="nav-item"><a href="test.html" class="nav-link">Kiểm tra</a></li>
+                    <li class="nav-item"><a href="tien-do.html" class="nav-link">Tiến độ</a></li>
+                    <li class="nav-item active"><a href="am-nhac.html" class="nav-link"><i class="fas fa-music" style="color:#f093fb;margin-right:.3rem"></i>Âm nhạc</a></li>
+                </ul>
+                <div class="hamburger" id="hamburger">
+                    <span class="bar"></span><span class="bar"></span><span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+        <div id="navAuthArea"></div>
+    </div>
+
+    <div class="page-content">
+
+    <div class="music-page">
+        <div class="music-wrap">
+
+            <div class="music-title">
+                <h1>🎵 Âm nhạc học tập</h1>
+                <p>Dán link nhạc vào ô bên dưới để phát trực tiếp</p>
+            </div>
+
+            <!-- Ô nhập link -->
+            <div class="link-box">
+                <label><i class="fas fa-link" style="margin-right:.4rem;color:#667eea"></i> Dán link nhạc vào đây</label>
+                <div class="link-input-row">
+                    <input type="text" class="link-input" id="linkInput"
+                           placeholder="https://... (MP3, YouTube, SoundCloud, Spotify)">
+                    <button class="btn-load" onclick="loadLink()">
+                        <i class="fas fa-play"></i> Phát
+                    </button>
+                </div>
+            </div>
+
+            <!-- Vùng player -->
+            <div class="player-area" id="playerArea">
+                <div class="player-placeholder" id="playerPlaceholder">
+                    <i class="fas fa-music"></i>
+                    Chưa có nhạc — dán link vào ô trên và nhấn Phát
+                </div>
+                <iframe id="playerFrame" height="152" allowfullscreen
+                        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"></iframe>
+                <audio id="audioEl" controls></audio>
+            </div>
+
+            <!-- Danh sách mẫu -->
+            <div class="sample-list">
+                <h4><i class="fas fa-list" style="margin-right:.4rem"></i> Nhạc mẫu — click để phát</h4>
+
+                <div class="sample-item" onclick="playSample('https://www.youtube.com/embed/jfKfPfyJRdk', 'iframe')">
+                    <div class="sample-icon" style="background:linear-gradient(135deg,#ff0000,#cc0000)"><i class="fab fa-youtube"></i></div>
+                    <div class="sample-info">
+                        <div class="sample-name">Lofi Hip Hop Radio 📚</div>
+                        <div class="sample-type">YouTube Live Stream</div>
+                    </div>
+                    <i class="fas fa-play sample-play"></i>
+                </div>
+
+                <div class="sample-item" onclick="playSample('https://www.youtube.com/embed/5qap5aO4i9A', 'iframe')">
+                    <div class="sample-icon" style="background:linear-gradient(135deg,#ff6b35,#f7931e)"><i class="fab fa-youtube"></i></div>
+                    <div class="sample-info">
+                        <div class="sample-name">Lofi Girl — Chill Beats</div>
+                        <div class="sample-type">YouTube</div>
+                    </div>
+                    <i class="fas fa-play sample-play"></i>
+                </div>
+
+                <div class="sample-item" onclick="playSample('https://www.youtube.com/embed/lTRiuFIWV54', 'iframe')">
+                    <div class="sample-icon" style="background:linear-gradient(135deg,#667eea,#764ba2)"><i class="fas fa-music"></i></div>
+                    <div class="sample-info">
+                        <div class="sample-name">Study Music — Piano</div>
+                        <div class="sample-type">YouTube</div>
+                    </div>
+                    <i class="fas fa-play sample-play"></i>
+                </div>
+
+                <div class="sample-item" onclick="playSample('https://www.youtube.com/embed/DWcJFNfaw9c', 'iframe')">
+                    <div class="sample-icon" style="background:linear-gradient(135deg,#43e97b,#38f9d7)"><i class="fas fa-leaf"></i></div>
+                    <div class="sample-info">
+                        <div class="sample-name">Nature Sounds — Focus</div>
+                        <div class="sample-type">YouTube</div>
+                    </div>
+                    <i class="fas fa-play sample-play"></i>
+                </div>
+            </div>
+
+            <!-- Hướng dẫn -->
+            <div class="code-guide">
+                <h4><i class="fas fa-code"></i> Hướng dẫn thêm nhạc & đổi background</h4>
+
+                <div class="code-block"><span class="c-comment">/* ── 1. ĐỔI BACKGROUND ── tìm dòng --bg-music trong css/am-nhac.css */</span>
+<span class="c-key">--bg-music</span>: <span class="c-val">linear-gradient(135deg, #1a1a2e, #0f3460)</span>; <span class="c-comment">/* gradient */</span>
+<span class="c-key">--bg-music</span>: <span class="c-val">#1a1a2e</span>;                                    <span class="c-comment">/* màu đơn  */</span>
+<span class="c-key">--bg-music</span>: <span class="c-val">url('../assets/images/bg.jpg') center/cover</span>; <span class="c-comment">/* ảnh nền  */</span></div>
+
+                <div class="code-block"><span class="c-comment">/* ── 2. THÊM NHẠC VÀO DANH SÁCH ── sao chép khối dưới */</span>
+<span class="c-comment">/* YouTube  → LINK = https://www.youtube.com/embed/VIDEO_ID */</span>
+<span class="c-comment">/* MP3 file → LINK = ../assets/files/ten-file.mp3  →  LOAI = 'mp3' */</span></div>
+            </div>
+
+        </div>
+    </div>
+
+    </div><!-- /.page-content -->
+
+    <script src="../js/auth.js"></script>
+    <script src="../js/am-nhac.js"></script>
+</body>
+</html>
