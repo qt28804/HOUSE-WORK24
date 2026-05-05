@@ -266,6 +266,11 @@ function renderCards() {
     const subj    = SUBJECTS[doc.subject] || { label: doc.subject, icon: 'fas fa-book', color: '#718096', grad: 'linear-gradient(135deg,#718096,#a0aec0)' };
     const badgeCls = 'badge-' + doc.subject;
     const viewsFmt = formatViews(doc.views);
+    const isVideo  = doc.type === 'video';
+    const readBtn  = isVideo
+      ? `<button class="btn-read btn-read-primary" onclick="openVideoInLib('${doc.videoUrl}','${doc.title.replace(/'/g,"\\'")}')"><i class="fas fa-play"></i> Xem video</button>`
+      : `<button class="btn-read btn-read-primary" onclick="openFile('${doc.fileUrl}')"><i class="fas fa-book-open"></i> Đọc ngay</button>`;
+    const dlBtn = isVideo ? '' : `<button class="btn-read btn-read-secondary" title="Tải xuống" aria-label="Tải xuống" onclick="downloadFile('${doc.downloadUrl || doc.fileUrl}', '${doc.title.replace(/'/g,"\\'")}')"><i class="fas fa-download"></i> Tải xuống</button>`;
 
     return `
 <div class="doc-card" data-subject="${doc.subject}">
@@ -290,12 +295,8 @@ function renderCards() {
     <span><i class="fas fa-clock"></i> ${doc.date}</span>
   </div>
   <div class="doc-card-footer">
-    <button class="btn-read btn-read-primary" onclick="openFile('${doc.fileUrl}')">
-      <i class="fas fa-book-open"></i> Đọc ngay
-    </button>
-    <button class="btn-read btn-read-secondary" title="Tải xuống" aria-label="Tải xuống" onclick="downloadFile('${doc.downloadUrl || doc.fileUrl}', '${doc.title}')">
-      <i class="fas fa-download"></i> Tải xuống
-    </button>
+    ${readBtn}
+    ${dlBtn}
   </div>
 </div>`;
   }).join('');
@@ -439,12 +440,64 @@ function searchDocs() {
   renderCards();
 }
 
+/**
+ * openVideoInLib — mở video từ admin upload trong modal
+ */
+function openVideoInLib(url, title) {
+  // Tạo modal video nếu chưa có
+  let modal = document.getElementById('hw-video-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'hw-video-modal';
+    modal.style.cssText = 'position:fixed;inset:0;z-index:5000;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;padding:1rem';
+    modal.innerHTML = `
+      <div style="background:#0f172a;border-radius:20px;width:100%;max-width:820px;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.6)">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:1rem 1.4rem;border-bottom:1px solid rgba(255,255,255,.08)">
+          <h3 id="hw-video-title" style="color:white;font-size:1rem;font-weight:700"></h3>
+          <button onclick="closeHwVideoModal()" style="background:rgba(255,255,255,.1);border:none;color:white;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div style="position:relative;padding-bottom:56.25%;height:0">
+          <iframe id="hw-video-frame" style="position:absolute;top:0;left:0;width:100%;height:100%;border:none" allowfullscreen></iframe>
+        </div>
+      </div>`;
+    modal.addEventListener('click', e => { if (e.target === modal) closeHwVideoModal(); });
+    document.body.appendChild(modal);
+  }
+
+  // Chuyển YouTube link thường sang embed
+  let embedUrl = url;
+  if (url && url.includes('youtube.com/watch')) {
+    try { const vid = new URL(url).searchParams.get('v'); if (vid) embedUrl = `https://www.youtube.com/embed/${vid}`; } catch {}
+  } else if (url && url.includes('youtu.be/')) {
+    const vid = url.split('youtu.be/')[1]?.split('?')[0];
+    if (vid) embedUrl = `https://www.youtube.com/embed/${vid}`;
+  }
+
+  document.getElementById('hw-video-title').textContent = title || 'Video';
+  document.getElementById('hw-video-frame').src = embedUrl || '';
+  modal.style.display = 'flex';
+}
+
+function closeHwVideoModal() {
+  const modal = document.getElementById('hw-video-modal');
+  if (modal) {
+    modal.style.display = 'none';
+    const frame = document.getElementById('hw-video-frame');
+    if (frame) frame.src = '';
+  }
+}
+
 // ── 5. EVENT LISTENERS ───────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
 
   // Auth guard và navbar
   initAuth();
   initNavbar();
+
+  // ── Load nội dung admin upload vào DOCS ──────────────────────
+  _injectAdminDocs();
 
   // Search input — trigger on Enter key
   const searchInput = document.getElementById('searchInput');
@@ -467,7 +520,47 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ── 6. INIT ─────────────────────────────────────────────────
-  // Find the 'tat-ca' tab button and activate it
   const tatCaBtn = document.querySelector('.subject-tab-btn[data-subject="tat-ca"]');
   switchSubject(tatCaBtn, 'tat-ca');
 });
+
+// ── Inject nội dung admin vào DOCS array ─────────────────────
+function _injectAdminDocs() {
+  try {
+    const adminContent = JSON.parse(localStorage.getItem('hw_content') || '[]');
+    const forDocs = adminContent.filter(c => c.target === 'docs' || c.target === 'both');
+    if (forDocs.length === 0) return;
+
+    // Chuyển format admin → format DOCS
+    const maxId = Math.max(...DOCS.map(d => d.id), 0);
+    forDocs.forEach((c, i) => {
+      // Tránh trùng nếu đã inject trước đó
+      if (DOCS.find(d => d._adminId === c.id)) return;
+      DOCS.unshift({
+        id:          maxId + i + 1,
+        _adminId:    c.id,           // đánh dấu nguồn gốc
+        subject:     c.subject || 'tong-de',
+        chapter:     c.chapter || 'Tài liệu',
+        title:       c.title,
+        desc:        c.description || '',
+        views:       0,
+        date:        _fmtDateDocs(c.createdAt),
+        author:      c.author || 'Admin',
+        fileUrl:     c.type !== 'video' ? c.url : null,
+        downloadUrl: c.type !== 'video' ? c.url : null,
+        videoUrl:    c.type === 'video' ? c.url : null,
+        type:        c.type || 'pdf',
+      });
+    });
+  } catch(e) { console.warn('_injectAdminDocs:', e); }
+}
+
+function _fmtDateDocs(ts) {
+  if (!ts) return 'Vừa thêm';
+  const diff = Date.now() - ts;
+  if (diff < 3600000)   return 'Vừa thêm';
+  if (diff < 86400000)  return 'Hôm nay';
+  if (diff < 172800000) return 'Hôm qua';
+  if (diff < 604800000) return Math.floor(diff/86400000) + ' ngày trước';
+  return new Date(ts).toLocaleDateString('vi-VN');
+}

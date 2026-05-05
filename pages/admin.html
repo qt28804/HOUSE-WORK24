@@ -3,11 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>Admin — HOUSE WORK</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../css/ui.css">
-    <link rel="stylesheet" href="../css/admin.css">
+    <link rel="stylesheet" href="../css/ui.css?v=2">
+    <link rel="stylesheet" href="../css/admin.css?v=2">
 </head>
 <body>
 
@@ -64,6 +67,10 @@
                 <button class="adm-nav-btn" data-tab="documents">
                     <span class="adm-nav-icon"><i class="fas fa-file-alt"></i></span>Tài liệu
                     <span class="adm-nav-badge" id="navBadgeDocs">0</span>
+                </button>
+                <button class="adm-nav-btn" data-tab="content">
+                    <span class="adm-nav-icon"><i class="fas fa-upload"></i></span>Upload nội dung
+                    <span class="adm-nav-badge" id="navBadgeContent">0</span>
                 </button>
             </div>
             <div class="adm-nav-group">
@@ -250,9 +257,43 @@
         </section>
 
         <!-- ─────────────────────────────────────
-             TAB: Bảo vệ nội dung
+             TAB: Upload nội dung
         ───────────────────────────────────── -->
-        <section class="adm-tab" id="tab-protection">
+        <section class="adm-tab" id="tab-content">
+            <div class="adm-page-hd">
+                <div>
+                    <h1 class="adm-page-title">Upload nội dung</h1>
+                    <p class="adm-page-sub">Thêm tài liệu PDF và video vào Tài liệu &amp; Thư viện</p>
+                </div>
+                <div class="adm-page-actions">
+                    <div class="adm-search">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="contentSearch" placeholder="Tìm kiếm..." oninput="filterContent()">
+                    </div>
+                    <select class="adm-select" id="contentTypeFilter" onchange="filterContent()">
+                        <option value="">Tất cả loại</option>
+                        <option value="pdf">PDF</option>
+                        <option value="video">Video</option>
+                        <option value="doc">Tài liệu khác</option>
+                    </select>
+                    <button class="adm-btn adm-btn-primary" onclick="openAddContentModal()">
+                        <i class="fas fa-plus"></i> Thêm nội dung
+                    </button>
+                </div>
+            </div>
+            <div class="adm-card">
+                <div class="adm-card-hd">
+                    <h2 class="adm-card-title"><i class="fas fa-upload"></i> Danh sách nội dung
+                        <span class="adm-badge-count" id="contentCountBadge">0</span>
+                    </h2>
+                </div>
+                <div class="content-grid" id="contentGrid"></div>
+            </div>
+        </section>
+
+        <!-- ─────────────────────────────────────
+             TAB: Bảo vệ nội dung
+        ───────────────────────────────────── -->        <section class="adm-tab" id="tab-protection">
             <div class="adm-page-hd">
                 <div>
                     <h1 class="adm-page-title">Bảo vệ nội dung</h1>
@@ -406,7 +447,7 @@
      MODAL: Thêm / Sửa người dùng
 ══════════════════════════════════════════ -->
 <div class="adm-modal-overlay" id="userModal">
-    <div class="adm-modal">
+    <div class="adm-modal" onclick="event.stopPropagation()">
         <div class="adm-modal-hd">
             <h3 id="userModalTitle">Thêm người dùng</h3>
             <button class="adm-modal-close" onclick="closeUserModal()"><i class="fas fa-times"></i></button>
@@ -423,7 +464,12 @@
             </div>
             <div class="adm-form-group" id="formPasswordGroup">
                 <label>Mật khẩu</label>
-                <input type="password" id="formPassword" placeholder="••••••••" class="adm-input">
+                <div style="position:relative">
+                    <input type="password" id="formPassword" placeholder="••••••••" class="adm-input" style="padding-right:2.5rem">
+                    <button type="button" onclick="toggleAdminPw()" style="position:absolute;right:.7rem;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#94a3b8;font-size:.85rem">
+                        <i class="fas fa-eye" id="adminPwEye"></i>
+                    </button>
+                </div>
             </div>
             <div class="adm-form-group">
                 <label>Vai trò</label>
@@ -446,7 +492,7 @@
      MODAL: Xác nhận xóa
 ══════════════════════════════════════════ -->
 <div class="adm-modal-overlay" id="confirmModal">
-    <div class="adm-modal adm-modal-sm">
+    <div class="adm-modal adm-modal-sm" onclick="event.stopPropagation()">
         <div class="adm-modal-hd">
             <h3 id="confirmTitle">Xác nhận</h3>
             <button class="adm-modal-close" onclick="closeConfirmModal()"><i class="fas fa-times"></i></button>
@@ -455,18 +501,121 @@
             <p id="confirmMessage" style="color:#475569;font-size:.9rem;line-height:1.6"></p>
         </div>
         <div class="adm-modal-ft">
-            <button class="adm-btn adm-btn-ghost" onclick="closeConfirmModal()">Hủy</button>
-            <button class="adm-btn adm-btn-danger" id="confirmOkBtn">Xác nhận</button>
+            <button class="adm-btn adm-btn-ghost" onclick="event.stopPropagation();closeConfirmModal()">Hủy</button>
+            <button class="adm-btn adm-btn-danger" id="confirmOkBtn" onclick="event.stopPropagation()">Xác nhận</button>
         </div>
     </div>
 </div>
 
 <!-- Toast -->
+<!-- MODAL: Thêm/sửa nội dung -->
+<div class="adm-modal-overlay" id="contentModal">
+    <div class="adm-modal" style="max-width:600px;max-height:90vh;overflow-y:auto" onclick="event.stopPropagation()">
+        <div class="adm-modal-hd">
+            <h3 id="contentModalTitle">Thêm nội dung mới</h3>
+            <button class="adm-modal-close" onclick="closeContentModal()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="adm-modal-body">
+            <div class="adm-form-row">
+                <div class="adm-form-group">
+                    <label>Loại nội dung</label>
+                    <select class="adm-input" id="cFormType" onchange="_toggleContentTypeFields(this.value)">
+                        <option value="pdf">📄 PDF / Tài liệu</option>
+                        <option value="video">🎬 Video</option>
+                        <option value="doc">📝 Tài liệu khác</option>
+                    </select>
+                </div>
+                <div class="adm-form-group">
+                    <label>Hiển thị tại</label>
+                    <select class="adm-input" id="cFormTarget">
+                        <option value="docs">📚 Trang Tài liệu</option>
+                        <option value="library">🗂️ Thư viện</option>
+                        <option value="both">📚🗂️ Cả hai</option>
+                    </select>
+                </div>
+            </div>
+            <div class="adm-form-group">
+                <label>Tiêu đề <span style="color:#ef4444">*</span></label>
+                <input type="text" class="adm-input" id="cFormTitle" placeholder="Nhập tiêu đề tài liệu...">
+            </div>
+            <div class="adm-form-row">
+                <div class="adm-form-group">
+                    <label>Môn học</label>
+                    <select class="adm-input" id="cFormSubject">
+                        <option value="toan">Toán</option>
+                        <option value="ly">Vật lý</option>
+                        <option value="hoa">Hóa học</option>
+                        <option value="tin">Tin học</option>
+                        <option value="su">Lịch sử</option>
+                        <option value="cong-nghe">Công nghệ</option>
+                        <option value="tieng-anh">Tiếng Anh</option>
+                        <option value="tong-de">Tổng đề</option>
+                    </select>
+                </div>
+                <div class="adm-form-group">
+                    <label>Chương / Chủ đề</label>
+                    <input type="text" class="adm-input" id="cFormChapter" placeholder="VD: Đại số, Cơ học...">
+                </div>
+            </div>
+            <div class="adm-form-group">
+                <label>Tác giả / Nguồn</label>
+                <input type="text" class="adm-input" id="cFormAuthor" placeholder="VD: Thầy Minh, Nhóm biên soạn...">
+            </div>
+            <!-- Link tài liệu / video -->
+            <div class="adm-form-group" id="cFileGroup">
+                <label>Link tài liệu <span style="color:#ef4444">*</span></label>
+                <input type="text" class="adm-input" id="cFormUrl"
+                    placeholder="https://drive.google.com/... hoặc https://docs.google.com/...">
+                <div class="link-hint-row">
+                    <span class="link-hint-item" onclick="setLinkHint('drive')">
+                        <i class="fab fa-google-drive" style="color:#4285F4"></i> Google Drive
+                    </span>
+                    <span class="link-hint-item" onclick="setLinkHint('onedrive')">
+                        <i class="fab fa-microsoft" style="color:#0078d4"></i> OneDrive
+                    </span>
+                    <span class="link-hint-item" onclick="setLinkHint('dropbox')">
+                        <i class="fab fa-dropbox" style="color:#0061ff"></i> Dropbox
+                    </span>
+                    <span class="link-hint-item" onclick="setLinkHint('direct')">
+                        <i class="fas fa-link" style="color:#667eea"></i> Link trực tiếp
+                    </span>
+                </div>
+                <div id="cLinkGuide" class="link-guide" style="display:none"></div>
+            </div>
+            <!-- Link video -->
+            <div class="adm-form-group" id="cUrlGroup" style="display:none">
+                <label>Link video <span style="color:#ef4444">*</span></label>
+                <input type="text" class="adm-input" id="cFormVideoUrl"
+                    placeholder="https://youtube.com/watch?v=... hoặc https://drive.google.com/...">
+                <div class="link-hint-row">
+                    <span class="link-hint-item" onclick="setVideoHint('youtube')">
+                        <i class="fab fa-youtube" style="color:#ff0000"></i> YouTube
+                    </span>
+                    <span class="link-hint-item" onclick="setVideoHint('drive')">
+                        <i class="fab fa-google-drive" style="color:#4285F4"></i> Google Drive
+                    </span>
+                </div>
+                <div id="cVideoGuide" class="link-guide" style="display:none"></div>
+            </div>
+            <div class="adm-form-group">
+                <label>Mô tả ngắn</label>
+                <textarea class="adm-input" id="cFormDesc" rows="2" placeholder="Mô tả nội dung tài liệu..."></textarea>
+            </div>
+        </div>
+        <div class="adm-modal-ft">
+            <button class="adm-btn adm-btn-ghost" onclick="closeContentModal()">Hủy</button>
+            <button class="adm-btn adm-btn-primary" onclick="saveContent_form()">
+                <i class="fas fa-save"></i> Lưu nội dung
+            </button>
+        </div>
+    </div>
+</div>
+
 <div id="admToast" class="adm-toast"></div>
 
-<script src="../js/auth.js"></script>
+<script src="../js/auth.js?v=2"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="../js/supabase.js"></script>
-<script src="../js/admin.js"></script>
+<script src="../js/supabase.js?v=2"></script>
+<script src="../js/admin.js?v=2"></script>
 </body>
 </html>

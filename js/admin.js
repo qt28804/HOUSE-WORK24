@@ -8,6 +8,7 @@ const KEYS = {
     protection: 'hw_prot_settings',
     system:     'hw_sys_settings',
     violations: 'hw_violations',
+    content:    'hw_content',   // tài liệu & video do admin upload
 };
 
 // ── DOCS data (imported from tai-lieu context) ────────────────
@@ -196,6 +197,18 @@ function closeUserModal() {
     document.getElementById('userModal').classList.remove('open');
 }
 
+function toggleAdminPw() {
+    const pw  = document.getElementById('formPassword');
+    const eye = document.getElementById('adminPwEye');
+    if (pw.type === 'password') {
+        pw.type = 'text';
+        eye.className = 'fas fa-eye-slash';
+    } else {
+        pw.type = 'password';
+        eye.className = 'fas fa-eye';
+    }
+}
+
 async function saveUser() {
     const displayName = document.getElementById('formDisplayName').value.trim();
     const username    = document.getElementById('formUsername').value.trim();
@@ -291,17 +304,13 @@ function confirmDeleteUser(id) {
         return;
     }
 
-    openConfirmModal(
-        'Xóa người dùng',
-        `Bạn có chắc muốn xóa người dùng <strong>${u.displayName || u.username}</strong>? Hành động này không thể hoàn tác.`,
-        () => {
-            const updated = getUsers().filter(x => x.id !== id);
-            saveUsers(updated);
-            loadUsersTab();
-            refreshDashboard();
-            showToast('Đã xóa người dùng', 'success');
-        }
-    );
+    if (confirm(`Xóa người dùng "${u.displayName || u.username}"?\nHành động này không thể hoàn tác.`)) {
+        const updated = getUsers().filter(x => x.id !== id);
+        saveUsers(updated);
+        loadUsersTab();
+        refreshDashboard();
+        showToast('Đã xóa người dùng', 'success');
+    }
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -577,6 +586,12 @@ function openConfirmModal(title, message, onConfirm) {
     document.getElementById('confirmTitle').textContent   = title;
     document.getElementById('confirmMessage').innerHTML   = message;
     _confirmCallback = onConfirm;
+    // Gắn onclick trực tiếp vào nút — tránh conflict event listeners
+    const okBtn = document.getElementById('confirmOkBtn');
+    okBtn.onclick = () => {
+        closeConfirmModal();
+        if (_confirmCallback) _confirmCallback();
+    };
     document.getElementById('confirmModal').classList.add('open');
 }
 
@@ -585,29 +600,48 @@ function closeConfirmModal() {
     _confirmCallback = null;
 }
 
-document.addEventListener('click', e => {
-    if (e.target.id === 'confirmOkBtn') {
-        closeConfirmModal();
-        if (_confirmCallback) _confirmCallback();
-    }
-});
-
 // Close modals on overlay click
 document.addEventListener('click', e => {
     if (e.target.id === 'userModal')    closeUserModal();
+    if (e.target.id === 'contentModal') closeContentModal();
     if (e.target.id === 'confirmModal') closeConfirmModal();
+});
+
+// Content grid — event delegation cho view/edit/delete
+document.addEventListener('click', e => {
+    const btn = e.target.closest('[data-action]');
+    if (!btn) return;
+    const action = btn.dataset.action;
+    const id     = btn.dataset.id;
+    if (!id) return;
+
+    if (action === 'edit') {
+        openEditContentModal(id);
+    } else if (action === 'delete') {
+        confirmDeleteContent(id);
+    } else if (action === 'view') {
+        const list = getContent();
+        const c = list.find(x => x.id === id);
+        if (c && c.url) {
+            // Mở trong iframe modal thay vì tab mới
+            _openPreviewModal(c.url, c.title, c.type);
+        }
+    }
 });
 
 // ══════════════════════════════════════════════════════════════
 // NAV BADGES
 // ══════════════════════════════════════════════════════════════
 function updateNavBadges() {
-    const users = getUsers();
-    const docs  = getDocsData();
+    const users   = getUsers();
+    const docs    = getDocsData();
+    const content = getContent();
     const ub = document.getElementById('navBadgeUsers');
     const db = document.getElementById('navBadgeDocs');
+    const cb = document.getElementById('navBadgeContent');
     if (ub) ub.textContent = users.length;
     if (db) db.textContent = docs.length;
+    if (cb) cb.textContent = content.length;
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -649,6 +683,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Load tab data on demand
             if (tab === 'users')     loadUsersTab();
             if (tab === 'documents') loadDocsTab();
+            if (tab === 'content')   loadContentTab();
             if (tab === 'protection') renderViolationLog('violationLog');
         });
     });
@@ -668,3 +703,472 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// ══════════════════════════════════════════════════════════════
+// CONTENT MANAGEMENT — Upload tài liệu & video
+// ══════════════════════════════════════════════════════════════
+
+const SUBJECT_LABELS = {
+    'toan':'Toán','ly':'Vật lý','hoa':'Hóa học','tin':'Tin học',
+    'su':'Lịch sử','cong-nghe':'Công nghệ','tieng-anh':'Tiếng Anh','tong-de':'Tổng đề'
+};
+
+function getContent() {
+    return loadJSON(KEYS.content, []);
+}
+
+function saveContent(list) {
+    saveJSON(KEYS.content, list);
+    updateNavBadges();
+}
+
+// ── Render danh sách nội dung ──
+function loadContentTab() {
+    const list = getContent();
+    const badge = document.getElementById('navBadgeContent');
+    const countBadge = document.getElementById('contentCountBadge');
+    if (badge) badge.textContent = list.length;
+    if (countBadge) countBadge.textContent = list.length;
+    renderContentList(list);
+    _initDropZone();
+}
+
+function filterContent() {
+    const q    = (document.getElementById('contentSearch')?.value || '').toLowerCase();
+    const type = document.getElementById('contentTypeFilter')?.value || '';
+    const list = getContent();
+    const filtered = list.filter(c => {
+        const matchType = !type || c.type === type;
+        const matchQ    = !q || c.title.toLowerCase().includes(q) || (c.subject||'').toLowerCase().includes(q);
+        return matchType && matchQ;
+    });
+    document.getElementById('contentCountBadge').textContent = filtered.length;
+    renderContentList(filtered);
+}
+
+function renderContentList(list) {
+    const grid = document.getElementById('contentGrid');
+    if (!grid) return;
+
+    if (!list || list.length === 0) {
+        grid.innerHTML = `
+            <div class="adm-empty" style="grid-column:1/-1;padding:3rem">
+                <div class="adm-empty-icon"><i class="fas fa-photo-video"></i></div>
+                <div class="adm-empty-title">Chưa có nội dung</div>
+                <div class="adm-empty-desc">Nhấn "Thêm nội dung" để upload tài liệu hoặc video</div>
+            </div>`;
+        return;
+    }
+
+    grid.innerHTML = list.map(c => {
+        const isVideo = c.type === 'video';
+        const isPdf   = c.type === 'pdf';
+        const icon    = isVideo ? 'fa-play-circle' : isPdf ? 'fa-file-pdf' : 'fa-file-alt';
+        const color   = isVideo ? '#f43f5e' : isPdf ? '#ef4444' : '#667eea';
+        const subLabel = SUBJECT_LABELS[c.subject] || c.subject || '—';
+        const destMap  = { docs: 'Tài liệu', library: 'Thư viện', both: 'Cả hai' };
+        const dest     = destMap[c.target] || c.target;
+        const destIcon = c.target === 'library' ? 'fa-layer-group' : c.target === 'both' ? 'fa-clone' : 'fa-book';
+        const hasUrl   = c.url && c.url.length > 0;
+        const urlLabel = c.url && c.url.startsWith('data:') ? 'File đã upload' : c.url ? c.url.slice(0,40) + '...' : '—';
+
+        return `
+        <div class="content-card" data-id="${c.id}">
+            <div class="content-card-thumb" style="background:${isVideo ? 'linear-gradient(135deg,#1a1a2e,#16213e)' : 'linear-gradient(135deg,#f8fafc,#eef2ff)'}">
+                <i class="fas ${icon}" style="font-size:2.5rem;color:${color}"></i>
+                <span class="content-type-badge" style="background:${color}">
+                    <i class="fas ${icon}"></i> ${c.type.toUpperCase()}
+                </span>
+            </div>
+            <div class="content-card-body">
+                <div class="content-card-title">${c.title}</div>
+                <div class="content-card-meta">
+                    <span><i class="fas fa-book-open" style="color:#667eea"></i> ${subLabel}</span>
+                    <span><i class="fas ${destIcon}" style="color:#94a3b8"></i> ${dest}</span>
+                </div>
+                ${c.description ? `<div class="content-card-desc">${c.description}</div>` : ''}
+                <div class="content-card-footer">
+                    <span style="font-size:.72rem;color:#94a3b8">${fmtDate(c.createdAt)}</span>
+                    <div class="adm-tbl-actions">
+                        ${hasUrl ? `<button class="adm-icon-btn" title="Xem" data-action="view" data-id="${c.id}"><i class="fas fa-eye"></i></button>` : ''}
+                        <button class="adm-icon-btn" title="Sửa" data-action="edit" data-id="${c.id}"><i class="fas fa-pen"></i></button>
+                        <button class="adm-icon-btn danger" title="Xóa" data-action="delete" data-id="${c.id}"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+}
+
+// ── Modal thêm/sửa nội dung ──
+let _editingContentId = null;
+
+function openAddContentModal() {
+    _editingContentId = null;
+    document.getElementById('contentModalTitle').textContent = 'Thêm nội dung mới';
+    document.getElementById('cFormTitle').value       = '';
+    document.getElementById('cFormSubject').value     = 'toan';
+    document.getElementById('cFormType').value        = 'pdf';
+    document.getElementById('cFormTarget').value      = 'docs';
+    document.getElementById('cFormDesc').value        = '';
+    document.getElementById('cFormUrl').value         = '';
+    document.getElementById('cFormVideoUrl').value    = '';
+    document.getElementById('cFormFile') && (document.getElementById('cFormFile').value = '');
+    document.getElementById('cFormChapter').value     = '';
+    document.getElementById('cFormAuthor').value      = '';
+    document.getElementById('cFilePreview') && (document.getElementById('cFilePreview').innerHTML = '');
+    const lg = document.getElementById('cLinkGuide');
+    const vg = document.getElementById('cVideoGuide');
+    if (lg) lg.style.display = 'none';
+    if (vg) vg.style.display = 'none';
+    _toggleContentTypeFields('pdf');
+    document.getElementById('contentModal').classList.add('open');
+    setTimeout(_initDropZone, 50);
+}
+
+function openEditContentModal(id) {
+    const list = getContent();
+    const c = list.find(x => x.id === id);
+    if (!c) return;
+    _editingContentId = id;
+    document.getElementById('contentModalTitle').textContent = 'Chỉnh sửa nội dung';
+    document.getElementById('cFormTitle').value    = c.title || '';
+    document.getElementById('cFormSubject').value  = c.subject || 'toan';
+    document.getElementById('cFormType').value     = c.type || 'pdf';
+    document.getElementById('cFormTarget').value   = c.target || 'docs';
+    document.getElementById('cFormDesc').value     = c.description || '';
+    document.getElementById('cFormChapter').value  = c.chapter || '';
+    document.getElementById('cFormAuthor').value   = c.author || '';
+    // Set URL đúng field tùy loại
+    if (c.type === 'video') {
+        document.getElementById('cFormVideoUrl').value = c.url || '';
+        document.getElementById('cFormUrl').value      = '';
+    } else {
+        document.getElementById('cFormUrl').value      = c.url || '';
+        document.getElementById('cFormVideoUrl').value = '';
+    }
+    document.getElementById('cFilePreview').innerHTML = c.url && c.type !== 'video' && !c.url.startsWith('data:')
+        ? `<div class="file-preview-item"><i class="fas fa-link"></i> <span style="font-size:.8rem;word-break:break-all">${c.url.slice(0,80)}${c.url.length > 80 ? '...' : ''}</span></div>`
+        : c.url && c.url.startsWith('data:')
+        ? `<div class="file-preview-item"><i class="fas fa-file-pdf" style="color:#ef4444"></i> <span>File đã upload (base64)</span></div>`
+        : '';
+    _toggleContentTypeFields(c.type);
+    document.getElementById('contentModal').classList.add('open');
+}
+
+function closeContentModal() {
+    document.getElementById('contentModal').classList.remove('open');
+}
+function _toggleContentTypeFields(type) {
+    const urlGroup  = document.getElementById('cUrlGroup');
+    const fileGroup = document.getElementById('cFileGroup');
+    if (type === 'video') {
+        urlGroup.style.display  = 'block';
+        fileGroup.style.display = 'none';
+    } else {
+        urlGroup.style.display  = 'none';
+        fileGroup.style.display = 'block';
+    }
+}
+
+// Đọc file thành base64 để lưu vào localStorage
+function handleFileSelect(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const preview = document.getElementById('cFilePreview');
+    const maxMB = 5; // Giới hạn 5MB cho localStorage
+
+    if (file.size > maxMB * 1024 * 1024) {
+        // File lớn hơn 5MB → chỉ lưu tên, không encode base64
+        preview.innerHTML = `
+            <div class="file-preview-item" style="background:#fff7ed;border-color:#fed7aa;color:#c2410c">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>File lớn (${(file.size/1024/1024).toFixed(1)}MB) — nhập đường dẫn thủ công bên dưới</span>
+            </div>`;
+        showToast(`File > ${maxMB}MB, vui lòng nhập đường dẫn thủ công`, 'warning');
+        input.value = '';
+        return;
+    }
+
+    // Đọc file thành base64
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const base64 = e.target.result; // data:application/pdf;base64,...
+        document.getElementById('cFormUrl').value = base64;
+        preview.innerHTML = `
+            <div class="file-preview-item">
+                <i class="fas ${file.type.includes('pdf') ? 'fa-file-pdf' : 'fa-file'}" style="color:#ef4444"></i>
+                <span style="font-weight:600">${file.name}</span>
+                <span style="color:#94a3b8;font-size:.75rem">(${(file.size/1024/1024).toFixed(2)} MB — đã mã hóa)</span>
+            </div>`;
+        showToast('Đã đọc file thành công ✓', 'success');
+    };
+    reader.onerror = () => showToast('Không thể đọc file', 'error');
+    reader.readAsDataURL(file);
+}
+
+async function saveContent_form() {
+    const title   = document.getElementById('cFormTitle').value.trim();
+    const subject = document.getElementById('cFormSubject').value;
+    const type    = document.getElementById('cFormType').value;
+    const target  = document.getElementById('cFormTarget').value;
+    const desc    = document.getElementById('cFormDesc').value.trim();
+    const chapter = document.getElementById('cFormChapter').value.trim();
+    const author  = document.getElementById('cFormAuthor').value.trim();
+
+    // Lấy URL tùy loại và tự convert
+    let url = '';
+    if (type === 'video') {
+        url = _convertVideoUrl((document.getElementById('cFormVideoUrl')?.value || '').trim());
+    } else {
+        url = _convertDocUrl((document.getElementById('cFormUrl')?.value || '').trim());
+    }
+
+    if (!title) { showToast('Vui lòng nhập tiêu đề', 'warning'); return; }
+
+    const list = getContent();
+
+    if (_editingContentId) {
+        const idx = list.findIndex(c => c.id === _editingContentId);
+        if (idx === -1) return;
+        Object.assign(list[idx], { title, subject, type, target, description: desc, url, chapter, author });
+        saveContent(list);
+        showToast('Đã cập nhật nội dung', 'success');
+    } else {
+        const newItem = {
+            id:          'c_' + Date.now(),
+            title, subject, type, target,
+            description: desc,
+            url,
+            chapter,
+            author,
+            createdAt:   Date.now(),
+        };
+        list.unshift(newItem);
+        saveContent(list);
+
+        if (typeof isSupabaseConfigured === 'function' && isSupabaseConfigured()) {
+            _syncContentToSupabase(newItem);
+        }
+        showToast('Đã thêm nội dung ✓', 'success');
+    }
+
+    closeContentModal();
+    loadContentTab();
+    refreshDashboard();
+}
+
+async function _syncContentToSupabase(item) {
+    try {
+        const sb = getSupabase();
+        if (!sb) return;
+        await sb.from('documents').insert({
+            subject:      item.subject,
+            chapter:      item.chapter || item.type,
+            title:        item.title,
+            description:  item.description,
+            author:       item.author,
+            file_url:     item.type !== 'video' ? item.url : null,
+            download_url: item.type !== 'video' ? item.url : null,
+            is_published: true
+        });
+    } catch(e) { console.warn('Sync Supabase failed:', e); }
+}
+
+function confirmDeleteContent(id) {
+    const list = getContent();
+    const c = list.find(x => x.id === id);
+    if (!c) return;
+
+    // Dùng confirm() native của trình duyệt — đơn giản, chắc chắn hoạt động
+    if (confirm(`Xóa "${c.title}"?\nHành động này không thể hoàn tác.`)) {
+        const updated = getContent().filter(x => x.id !== id);
+        saveContent(updated);
+        loadContentTab();
+        refreshDashboard();
+        showToast('Đã xóa nội dung', 'success');
+    }
+}
+
+// Expose content cho trang tài liệu & thư viện
+window.HW_getContent = function(target) {
+    return getContent().filter(c => !target || c.target === target);
+};
+
+// ── Preview modal (iframe) ────────────────────────────────────
+function _openPreviewModal(url, title, type) {
+    let modal = document.getElementById('hw-preview-modal');
+    if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'hw-preview-modal';
+        modal.style.cssText = 'position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,0.88);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1rem';
+        modal.innerHTML = `
+            <div style="background:#0f172a;border-radius:16px;width:100%;max-width:900px;height:90vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,.6)">
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:.85rem 1.2rem;border-bottom:1px solid rgba(255,255,255,.08);flex-shrink:0">
+                    <h3 id="hw-preview-title" style="color:white;font-size:.95rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;margin-right:1rem"></h3>
+                    <div style="display:flex;gap:.5rem;flex-shrink:0">
+                        <a id="hw-preview-open" href="#" target="_blank" style="background:rgba(255,255,255,.1);border:none;color:white;padding:.4rem .9rem;border-radius:8px;font-size:.78rem;font-weight:600;text-decoration:none;display:flex;align-items:center;gap:.35rem">
+                            <i class="fas fa-external-link-alt"></i> Mở tab mới
+                        </a>
+                        <button onclick="document.getElementById('hw-preview-modal').style.display='none';document.getElementById('hw-preview-frame').src=''" style="background:rgba(255,255,255,.1);border:none;color:white;width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:.9rem;display:flex;align-items:center;justify-content:center">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <iframe id="hw-preview-frame" style="flex:1;border:none;width:100%;background:white" allowfullscreen></iframe>
+            </div>`;
+        modal.addEventListener('click', e => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+                document.getElementById('hw-preview-frame').src = '';
+            }
+        });
+        document.body.appendChild(modal);
+    }
+    document.getElementById('hw-preview-title').textContent = title || 'Xem tài liệu';
+    document.getElementById('hw-preview-open').href = url;
+    document.getElementById('hw-preview-frame').src = url;
+    modal.style.display = 'flex';
+}
+
+// ── Convert URL tài liệu sang dạng nhúng ─────────────────────
+function _convertDocUrl(url) {
+    if (!url) return url;
+    // Google Drive: /view hoặc /view?usp=sharing → /preview
+    if (url.includes('drive.google.com/file/d/')) {
+        return url.replace(/\/view(\?.*)?$/, '/preview').replace(/\/edit(\?.*)?$/, '/preview');
+    }
+    // Google Docs/Sheets/Slides → export PDF
+    if (url.includes('docs.google.com/document/d/')) {
+        const id = url.match(/\/d\/([^/]+)/)?.[1];
+        if (id) return `https://docs.google.com/document/d/${id}/preview`;
+    }
+    // OneDrive share link → embed
+    if (url.includes('1drv.ms') || url.includes('onedrive.live.com')) {
+        return `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(url)}`;
+    }
+    return url;
+}
+
+function _convertVideoUrl(url) {
+    if (!url) return url;
+    // YouTube watch → embed
+    if (url.includes('youtube.com/watch')) {
+        try {
+            const vid = new URL(url).searchParams.get('v');
+            if (vid) return `https://www.youtube.com/embed/${vid}`;
+        } catch {}
+    }
+    // youtu.be short link → embed
+    if (url.includes('youtu.be/')) {
+        const vid = url.split('youtu.be/')[1]?.split('?')[0];
+        if (vid) return `https://www.youtube.com/embed/${vid}`;
+    }
+    // Google Drive video: /view → /preview
+    if (url.includes('drive.google.com/file/d/')) {
+        return url.replace(/\/view(\?.*)?$/, '/preview').replace(/\/edit(\?.*)?$/, '/preview');
+    }
+    return url;
+}
+
+// ── Hướng dẫn link tài liệu ──────────────────────────────────
+const LINK_GUIDES = {
+    drive: {
+        guide: `<b>Google Drive:</b><br>
+1. Mở file trên Drive → nhấn <b>Chia sẻ</b><br>
+2. Đổi quyền thành <b>"Bất kỳ ai có đường liên kết"</b><br>
+3. Copy link dạng: <code>https://drive.google.com/file/d/FILE_ID/view</code><br>
+4. Dán vào ô trên — hệ thống tự chuyển sang link nhúng`,
+        placeholder: 'https://drive.google.com/file/d/FILE_ID/view'
+    },
+    onedrive: {
+        guide: `<b>OneDrive:</b><br>
+1. Chuột phải file → <b>Chia sẻ</b> → <b>Sao chép liên kết</b><br>
+2. Đảm bảo quyền <b>"Bất kỳ ai có liên kết"</b><br>
+3. Dán link vào ô trên`,
+        placeholder: 'https://1drv.ms/b/...'
+    },
+    dropbox: {
+        guide: `<b>Dropbox:</b><br>
+1. Chuột phải file → <b>Copy link</b><br>
+2. Đổi <code>?dl=0</code> thành <code>?raw=1</code> ở cuối link<br>
+3. Dán link vào ô trên`,
+        placeholder: 'https://www.dropbox.com/s/.../file.pdf?raw=1'
+    },
+    direct: {
+        guide: `<b>Link trực tiếp:</b><br>
+Dán URL trực tiếp đến file PDF hoặc tài liệu.<br>
+Ví dụ: <code>https://example.com/tai-lieu.pdf</code>`,
+        placeholder: 'https://example.com/tai-lieu.pdf'
+    }
+};
+
+const VIDEO_GUIDES = {
+    youtube: {
+        guide: `<b>YouTube:</b><br>
+1. Mở video → nhấn <b>Chia sẻ</b> → <b>Nhúng</b><br>
+2. Copy link dạng: <code>https://www.youtube.com/watch?v=VIDEO_ID</code><br>
+3. Hoặc dán link thường — hệ thống tự chuyển sang embed`,
+        placeholder: 'https://www.youtube.com/watch?v=VIDEO_ID'
+    },
+    drive: {
+        guide: `<b>Google Drive Video:</b><br>
+1. Upload video lên Drive → Chia sẻ công khai<br>
+2. Copy link: <code>https://drive.google.com/file/d/FILE_ID/view</code>`,
+        placeholder: 'https://drive.google.com/file/d/FILE_ID/view'
+    }
+};
+
+function setLinkHint(type) {
+    const guide = LINK_GUIDES[type];
+    if (!guide) return;
+    const guideEl = document.getElementById('cLinkGuide');
+    const input   = document.getElementById('cFormUrl');
+    if (guideEl) {
+        guideEl.innerHTML = guide.guide;
+        guideEl.style.display = 'block';
+    }
+    if (input && !input.value) input.placeholder = guide.placeholder;
+}
+
+function setVideoHint(type) {
+    const guide = VIDEO_GUIDES[type];
+    if (!guide) return;
+    const guideEl = document.getElementById('cVideoGuide');
+    const input   = document.getElementById('cFormVideoUrl');
+    if (guideEl) {
+        guideEl.innerHTML = guide.guide;
+        guideEl.style.display = 'block';
+    }
+    if (input && !input.value) input.placeholder = guide.placeholder;
+}
+
+// ── Drag & Drop cho file upload zone ──────────────────────────
+function _initDropZone() {
+    const zone = document.querySelector('.file-upload-zone');
+    if (!zone || zone._dropInited) return;
+    zone._dropInited = true;
+
+    zone.addEventListener('dragover', e => {
+        e.preventDefault();
+        zone.style.borderColor = '#667eea';
+        zone.style.background  = '#eef2ff';
+    });
+    zone.addEventListener('dragleave', () => {
+        zone.style.borderColor = '';
+        zone.style.background  = '';
+    });
+    zone.addEventListener('drop', e => {
+        e.preventDefault();
+        zone.style.borderColor = '';
+        zone.style.background  = '';
+        const file = e.dataTransfer.files[0];
+        if (!file) return;
+        const input = document.getElementById('cFormFile');
+        // Gán file vào input rồi trigger change
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        input.files = dt.files;
+        handleFileSelect(input);
+    });
+}

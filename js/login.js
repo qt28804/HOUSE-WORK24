@@ -89,57 +89,66 @@ async function handleLogin(e) {
     const btn      = document.getElementById('loginBtn');
     const errorMsg = document.getElementById('errorMsg');
 
+    if (!username || !password) {
+        document.getElementById('errorText').textContent = 'Vui lòng nhập đầy đủ thông tin.';
+        errorMsg.classList.add('show');
+        return;
+    }
+
     btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xác thực...';
     btn.disabled  = true;
     errorMsg.classList.remove('show');
 
+    // Hash mật khẩu (await đúng cách, không bọc trong setTimeout)
     const inputHash = await _sha256(password);
 
     // ── Admin login ──
     if (currentRole === 'admin') {
-        setTimeout(() => {
-            const isValid = username === ADMIN_CREDENTIALS.username &&
-                            inputHash === ADMIN_CREDENTIALS.passwordHash;
-            if (isValid) {
-                const userData = JSON.stringify({
-                    username, role: 'admin',
-                    displayName: ADMIN_CREDENTIALS.displayName,
-                    loginMethod: 'password'
-                });
-                if (remember) localStorage.setItem('hw_user', userData);
-                else sessionStorage.setItem('hw_user', userData);
-                btn.innerHTML = '<i class="fas fa-check"></i> Thành công!';
-                btn.style.background = 'linear-gradient(135deg, #43e97b, #38f9d7)';
-                showPageLoader('Đang vào trang quản trị...', _getRedirectParam() || ADMIN_CREDENTIALS.redirect);
-            } else {
-                _loginError(btn, 'Sai tên đăng nhập hoặc mật khẩu admin.');
-            }
-        }, 600);
-        return;
-    }
-
-    // ── Student login — kiểm tra tài khoản do admin tạo ──
-    setTimeout(() => {
-        const users = JSON.parse(localStorage.getItem('hw_users') || '[]');
-        const user  = users.find(u => u.username === username && u.password === inputHash);
-
-        if (user) {
+        const isValid = username === ADMIN_CREDENTIALS.username &&
+                        inputHash === ADMIN_CREDENTIALS.passwordHash;
+        if (isValid) {
             const userData = JSON.stringify({
-                username:    user.username,
-                displayName: user.displayName || user.username,
-                role:        'student',
-                loginMethod: 'password',
-                dbId:        user.id || null
+                username, role: 'admin',
+                displayName: ADMIN_CREDENTIALS.displayName,
+                loginMethod: 'password'
             });
             if (remember) localStorage.setItem('hw_user', userData);
             else sessionStorage.setItem('hw_user', userData);
             btn.innerHTML = '<i class="fas fa-check"></i> Thành công!';
             btn.style.background = 'linear-gradient(135deg, #43e97b, #38f9d7)';
-            showPageLoader('Đang tải trang...', _getRedirectParam() || 'index.html');
+            showPageLoader('Đang vào trang quản trị...', _getRedirectParam() || ADMIN_CREDENTIALS.redirect);
         } else {
-            _loginError(btn, 'Tên đăng nhập hoặc mật khẩu không đúng.');
+            _loginError(btn, 'Sai tên đăng nhập hoặc mật khẩu admin.');
         }
-    }, 600);
+        return;
+    }
+
+    // ── Student login — kiểm tra tài khoản do admin tạo ──
+    const users = JSON.parse(localStorage.getItem('hw_users') || '[]');
+    const user  = users.find(u => u.username === username && u.password === inputHash);
+
+    if (user) {
+        // Kiểm tra tài khoản có bị vô hiệu hóa không
+        if (user.isActive === false) {
+            _loginError(btn, 'Tài khoản đã bị vô hiệu hóa. Liên hệ admin.');
+            return;
+        }
+        const userData = JSON.stringify({
+            username:    user.username,
+            displayName: user.displayName || user.username,
+            role:        user.role === 'admin' ? 'admin' : 'student',
+            loginMethod: 'password',
+            dbId:        user.id || null
+        });
+        if (remember) localStorage.setItem('hw_user', userData);
+        else sessionStorage.setItem('hw_user', userData);
+        btn.innerHTML = '<i class="fas fa-check"></i> Thành công!';
+        btn.style.background = 'linear-gradient(135deg, #43e97b, #38f9d7)';
+        const dest = user.role === 'admin' ? 'pages/admin.html' : 'index.html';
+        showPageLoader('Đang tải trang...', _getRedirectParam() || dest);
+    } else {
+        _loginError(btn, 'Tên đăng nhập hoặc mật khẩu không đúng.');
+    }
 }
 
 function _loginError(btn, msg) {
